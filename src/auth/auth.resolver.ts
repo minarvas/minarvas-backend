@@ -1,4 +1,4 @@
-import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Input } from '../graphql/args/input.args';
 import { UserResponse } from '../users/responses/user.response';
@@ -21,11 +21,7 @@ export class AuthResolver {
   @Query(() => UserResponse)
   @UseGuards(AuthGuard)
   async me(@AuthorizedUser() user: UserResponse) {
+    console.log(user);
     return user;
-  }
-
-  @ResolveField()
-  async auths(@Parent() user: UserResponse) {
-    return await this.userService.getUserAuths(user.id);
   }
 }

@@ -1,7 +1,8 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import {JwtPayload, JwtToken} from '../dto/jwt.dto';
+import { JwtPayload, JwtToken } from '../dto/jwt.dto';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class JwtTokenGenerator {
@@ -17,7 +18,7 @@ export class JwtTokenGenerator {
     this.refreshTokenExpiresIn = this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRES_IN');
   }
 
-  sign(userId: string): JwtToken {
+  sign(userId: Types.ObjectId): JwtToken {
     const accessToken = this.jwtService.sign(
       { userId },
       {
@@ -37,9 +38,9 @@ export class JwtTokenGenerator {
   }
 
   refresh(refreshToken: string) {
-    try{
-    const payload: JwtPayload = this.jwtService.verify<JwtPayload>(refreshToken, {secret: this.refreshTokenSecret});
-    return this.sign(payload.userId);
+    try {
+      const payload: JwtPayload = this.jwtService.verify<JwtPayload>(refreshToken, { secret: this.refreshTokenSecret });
+      return this.sign(payload.userId);
     } catch {
       throw new UnauthorizedException();
     }

@@ -1,8 +1,8 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { UserAuthResponse } from './responses/user-auth.response';
+import { AccountResponse } from './responses/account.response';
 
-@Resolver((of) => UserAuthResponse)
+@Resolver((of) => AccountResponse)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 

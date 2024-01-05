@@ -1,11 +1,12 @@
-import {JwtAuth} from "../interfaces/auth.interface";
+import { JwtAuth } from '../interfaces/auth.interface';
+import { Types } from 'mongoose';
 
 export class JwtToken implements JwtAuth {
-  userId: string;
+  userId: Types.ObjectId;
   accessToken: string;
   refreshToken: string;
 }
 
 export class JwtPayload {
-  userId: string;
+  userId: Types.ObjectId;
 }

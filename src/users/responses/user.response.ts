@@ -1,12 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { UserAuthResponse } from './user-auth.response';
-import { User } from '../interfaces/user.interface';
+import { AccountResponse } from './account.response';
+import { IUser } from '../interfaces/user.interface';
+import { Transform } from 'class-transformer';
+import { BaseResponse } from '../../common/responses/base.response';
+import { DeepPartial } from 'typeorm';
 
 @ObjectType()
-export class UserResponse implements User {
-  @Field()
-  id: string;
-
+export class UserResponse extends BaseResponse implements IUser {
   @Field()
   email: string;
 
@@ -16,9 +16,15 @@ export class UserResponse implements User {
   @Field(() => Date)
   lastLoginTime: Date;
 
-  @Field((_type) => [UserAuthResponse])
-  auths: UserAuthResponse[];
+  @Field((_type) => [AccountResponse])
+  @Transform(({ value }) => value.map((account) => new AccountResponse(account)))
+  accounts: AccountResponse[];
 
   @Field({ nullable: true })
   refreshToken?: string;
+
+  constructor(partial: DeepPartial<UserResponse>) {
+    super(partial);
+    Object.assign(this, partial);
+  }
 }

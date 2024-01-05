@@ -1,38 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from './entities/user.entity';
-import { UserAuthManager } from './services/user-auth-manager.service';
-import { UserManager } from './services/user-manager.service';
-import { CreateSocialUserInput } from './inputs/user.input';
-import {UpdateUserDTO} from "./dto/user.dto";
+import { CreateUserDTO, UpdateUserDTO } from './dto/user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from './schemas/user.schema';
+import { Model, Types } from 'mongoose';
+import { UserResponse } from './responses/user.response';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userManager: UserManager, private readonly userAuthManager: UserAuthManager) {}
+  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
 
-  async createSocialUser(args: CreateSocialUserInput) {
+  async createUser(args: CreateUserDTO): Promise<UserDocument> {
     const { provider, ...basicInfo } = args;
-    const user: UserEntity = await this.userManager.createUser(basicInfo);
-    await this.userAuthManager.createUserAuth({ user, provider });
-    return user;
+    return await this.userModel.create({ ...basicInfo, accounts: [{ provider }] });
   }
 
   async isExistUser(email: string): Promise<boolean> {
-    return await this.userManager.isExistUser(email);
+    const user = await this.userModel.exists({ email });
+    return !!user;
   }
 
-  async getUser(userId: string): Promise<UserEntity> {
-    return await this.userManager.getUserBy({ id: userId });
+  async getUser(userId: Types.ObjectId): Promise<UserDocument> {
+    return this.userModel.findById(userId);
   }
 
-  async getUserByEmail(email: string): Promise<UserEntity> {
-    return await this.userManager.getUserBy({ email });
+  async getUserByEmail(email: string): Promise<UserDocument> {
+    return this.userModel.findOne({ email });
   }
 
-  async getUserAuths(userId: string) {
-    return await this.userAuthManager.getUserAuthsBy({ userId });
-  }
-
-  async updateUser(userId: string, dto: UpdateUserDTO) {
-    return await this.userManager.updateUser(userId, dto);
+  async updateUser(userId: Types.ObjectId, dto: UpdateUserDTO): Promise<UserResponse> {
+    const user: UserDocument = await this.userModel.findOneAndUpdate<UserDocument>({ _id: userId }, dto, { new: true });
+    return new UserResponse(user);
   }
 }

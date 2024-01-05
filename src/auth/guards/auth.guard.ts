@@ -4,6 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from '../../users/user.service';
+import { JwtPayload } from '../dto/jwt.dto';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -19,10 +20,9 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload: {
-        id: string;
-      } = this.jwtService.verify(token, { secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET') });
-      request['user'] = await this.userService.getUser(payload.id);
+      const payload: JwtPayload = this.jwtService.verify(token, { secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET') });
+
+      request['user'] = await this.userService.getUser(payload.userId);
     } catch (err) {
       throw new UnauthorizedException();
     }
