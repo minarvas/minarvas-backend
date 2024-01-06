@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UserService } from 'src/users/user.service';
 import { UserProvider } from '../users/enums/user-provider.enum';
 import { ConfigService } from '@nestjs/config';
@@ -15,6 +15,7 @@ import { UserResponse } from '../users/responses/user.response';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   private readonly kakaoClientId: string;
   private readonly kakaoRedirectUrl: string;
   private readonly kakaoSecret: string;
@@ -33,9 +34,11 @@ export class AuthService {
   async socialSignup(payload: CreateUserDTO) {
     const isExistUser = await this.userService.isExistUser(payload.email);
     if (isExistUser) {
+      this.logger.log(`Login social user: ${payload.email}`);
       return await this.loginSocialUser(payload);
     }
 
+    this.logger.log(`Register social user: ${payload.email}`);
     return await this.registerSocialUser(payload);
   }
 

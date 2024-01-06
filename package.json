@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "build:docker": "SERVICE_ENV=development && docker build -t minarvas .",
+    "build:docker": "SERVICE_ENV=development && ./scripts/docker-build.sh",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "SERVICE_ENV=local && nest start --watch",
     "start:docker": "yarn build:docker && docker run -d -p 8080:8080 --name minarvas-owl minarvas",
