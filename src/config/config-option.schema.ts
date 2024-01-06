@@ -1,4 +1,3 @@
-import { InternalServerErrorException } from '@nestjs/common';
 import { ConfigModuleOptions } from '@nestjs/config/dist';
 import * as Joi from 'joi';
 import { join } from 'path';
@@ -14,7 +13,7 @@ const getEnvFilePath = (): string => {
     case 'production':
       return join(baseEnvDirectory, '.env.production');
     default:
-      throw new InternalServerErrorException('SERVICE_ENV is not set.');
+      return join(baseEnvDirectory, '.env.development');
   }
 };
 
