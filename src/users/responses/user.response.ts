@@ -13,7 +13,7 @@ export class UserResponse extends BaseResponse implements IUser {
   @Field()
   name: string;
 
-  @Field(() => Date)
+  @Field()
   lastLoginTime: Date;
 
   @Field((_type) => [AccountResponse])
@@ -25,6 +25,12 @@ export class UserResponse extends BaseResponse implements IUser {
 
   constructor(partial: DeepPartial<UserResponse>) {
     super(partial);
-    Object.assign(this, partial);
+    Object.assign(this, {
+      email: partial?.email,
+      name: partial?.name,
+      lastLoginTime: partial?.lastLoginTime,
+      accounts: partial?.accounts,
+      refreshToken: partial?.refreshToken,
+    });
   }
 }

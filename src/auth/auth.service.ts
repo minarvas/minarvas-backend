@@ -11,6 +11,7 @@ import { AuthenticatedUser } from './dto/auth.dto';
 import { JwtAuth } from './interfaces/auth.interface';
 import { UserDocument } from '../users/schemas/user.schema';
 import { CreateUserDTO } from '../users/dto/user.dto';
+import { UserResponse } from '../users/responses/user.response';
 
 @Injectable()
 export class AuthService {
@@ -84,7 +85,7 @@ export class AuthService {
 
   async refreshJwt(refreshToken: string) {
     const jwtToken: JwtToken = this.jwtTokenGenerator.refresh(refreshToken);
-    const user: UserDocument = await this.userService.getUser(jwtToken.userId);
+    const user: UserResponse = await this.userService.getUser(jwtToken.userId);
     return new AuthenticatedUser({ ...user, ...jwtToken });
   }
 }

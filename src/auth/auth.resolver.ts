@@ -21,7 +21,6 @@ export class AuthResolver {
   @Query(() => UserResponse)
   @UseGuards(AuthGuard)
   async me(@AuthorizedUser() user: UserResponse) {
-    console.log(user);
     return user;
   }
 }

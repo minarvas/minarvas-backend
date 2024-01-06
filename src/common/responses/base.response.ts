@@ -15,6 +15,8 @@ export class BaseResponse implements IBase {
   updatedAt: Date;
 
   constructor(partial) {
-    Object.assign(this, partial);
+    this._id = partial?._id.toHexString();
+    this.createdAt = partial?.createdAt;
+    this.updatedAt = partial?.updatedAt;
   }
 }

@@ -10,6 +10,6 @@ export class AccountResponse extends BaseResponse implements IAccount {
 
   constructor(partial: Partial<AccountResponse>) {
     super(partial);
-    Object.assign(this, partial);
+    Object.assign(this, { provider: partial.provider });
   }
 }

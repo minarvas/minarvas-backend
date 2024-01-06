@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CONFIG_OPTION } from './config/config-option.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       installSubscriptionHandlers: true,
       autoTransformHttpErrors: true,
       playground: false,
-      // resolvers: { ObjectId: ObjectIdScalar },
+      resolvers: { ObjectId: ObjectIdScalar },
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     MongooseModule.forRootAsync({
