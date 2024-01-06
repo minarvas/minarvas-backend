@@ -20,13 +20,10 @@ const getEnvFilePath = (): string => {
 
 export const CONFIG_OPTION: ConfigModuleOptions = {
   validationSchema: Joi.object({
-    MYSQL_HOST: Joi.string().required(),
-    MYSQL_PORT: Joi.number().required(),
-    MYSQL_USERNAME: Joi.string().required(),
-    MYSQL_PASSWORD: Joi.string().required(),
-    MYSQL_DATABASE: Joi.string().required(),
-    MYSQL_SYNCHRONIZE: Joi.boolean().default(false),
-    MYSQL_LOGGING: Joi.boolean().default(false),
+    MONGODB_HOST: Joi.string().required(),
+    MONGODB_USERNAME: Joi.string().required(),
+    MONGODB_PASSWORD: Joi.string().required(),
+    MONGODB_DATABASE: Joi.string().required(),
   }),
   envFilePath: [getEnvFilePath()],
   isGlobal: true,
