@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AccountResponse } from './account.response';
 import { IUser } from '../interfaces/user.interface';
-import { Transform } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { BaseResponse } from '../../common/responses/base.response';
 import { DeepPartial } from 'typeorm';
 
@@ -20,7 +20,7 @@ export class UserResponse extends BaseResponse implements IUser {
   @Transform(({ value }) => value.map((account) => new AccountResponse(account)))
   accounts: AccountResponse[];
 
-  @Field({ nullable: true })
+  @Exclude()
   refreshToken?: string;
 
   constructor(partial: DeepPartial<UserResponse>) {

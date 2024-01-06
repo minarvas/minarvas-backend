@@ -1,8 +1,19 @@
 FROM node:18
-RUN mkdir -p /var/app
-WORKDIR /var/app
+
+# Setting locale
+ENV LANG=C.UTF-8
+
+WORKDIR /app
+
+# Copy package.json and yarn.lock to the container
+COPY package.json yarn.lock ./
+
+RUN yarn install
+
 COPY . .
-RUN npm install
-RUN npm run build
-EXPOSE 3000
-CMD [ "node", "dist/main.js" ]
+
+RUN yarn build
+
+EXPOSE 8080
+
+CMD ["yarn", "start:prod"]

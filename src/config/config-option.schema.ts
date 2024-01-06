@@ -14,7 +14,7 @@ const getEnvFilePath = (): string => {
     case 'production':
       return join(baseEnvDirectory, '.env.production');
     default:
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('SERVICE_ENV is not set.');
   }
 };
 

@@ -8,10 +8,12 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "build:docker": "SERVICE_ENV=local && docker build -t minarvas .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "SERVICE_ENV=local && nest start --watch",
+    "start:docker": "yarn build:docker && docker run -d -p 8080:8080 --name minarvas-owl minarvas",
     "start:dev": "SERVICE_ENV=development && nest start --watch",
-    "start:prod": "SERVICE_ENV=production && node dist/main",
+    "start:prod": "SERVICE_ENV=local && node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
