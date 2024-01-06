@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Mutation, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { AccountResponse } from './responses/account.response';
 import { UserResponse } from './responses/user.response';
@@ -12,11 +12,6 @@ import { Types } from 'mongoose';
 @Resolver((of) => AccountResponse)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
-
-  @Query(() => Boolean)
-  async isExistUser(@Args('email') email: string): Promise<boolean> {
-    return await this.userService.isExistUser(email);
-  }
 
   @Mutation(() => UserResponse)
   @UseGuards(AuthGuard)
