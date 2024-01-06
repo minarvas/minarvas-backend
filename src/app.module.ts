@@ -1,6 +1,6 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { CONFIG_OPTION } from './common/config/config-option.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
+import { LoggingMiddleware } from './common/middlewares/logging.middleware';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
       playground: false,
       resolvers: { ObjectId: ObjectIdScalar },
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      context: ({ req, res }) => ({ req, res }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -37,4 +39,8 @@ import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('graphql');
+  }
+}

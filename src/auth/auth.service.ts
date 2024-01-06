@@ -86,9 +86,9 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async refreshJwt(refreshToken: string) {
+  async refreshToken(refreshToken: string) {
     const jwtToken: JwtToken = this.jwtTokenGenerator.refresh(refreshToken);
     const user: UserResponse = await this.userService.getUser(jwtToken.userId);
-    return new AuthenticatedUser({ ...user, ...jwtToken });
+    return { user, jwtToken };
   }
 }
