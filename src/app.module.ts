@@ -27,9 +27,7 @@ import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         return {
-          uri: configService.get<string>('MONGODB_HOST'),
-          user: configService.get<string>('MONGODB_USERNAME'),
-          pass: configService.get<string>('MONGODB_PASSWORD'),
+          uri: configService.get<string>('MONGODB_URI'),
           dbName: configService.get<string>('MONGODB_DATABASE'),
         };
       },
