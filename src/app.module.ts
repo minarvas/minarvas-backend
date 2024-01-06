@@ -6,7 +6,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { CONFIG_OPTION } from './config/config-option.schema';
+import { CONFIG_OPTION } from './common/config/config-option.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 

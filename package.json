@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "build:docker": "SERVICE_ENV=local && docker build -t minarvas .",
+    "build:docker": "SERVICE_ENV=development && docker build -t minarvas .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "SERVICE_ENV=local && nest start --watch",
     "start:docker": "yarn build:docker && docker run -d -p 8080:8080 --name minarvas-owl minarvas",
@@ -42,6 +42,7 @@
     "graphql-scalars": "^1.22.2",
     "graphql-subscriptions": "2.0.0",
     "graphql-tools": "^9.0.0",
+    "helmet": "^7.1.0",
     "joi": "^17.9.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.0.3",
