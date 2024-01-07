@@ -1,5 +1,7 @@
 runtime: nodejs18
 
+env: standard
+
 instance_class: F2
 
 
