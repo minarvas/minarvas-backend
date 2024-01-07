@@ -1,0 +1,17 @@
+runtime: nodejs18
+
+instance_class: F2
+
+
+# 서비스의 이름 (고유해야 함)
+service: default
+
+# automatic scaling 설정
+automatic_scaling:
+  max_instances: 1
+  min_instances: 1
+
+# 환경 변수 설정 (필요한 경우)
+env_variables:
+  SERVICE_ENV: development
+  NODE_ENV: development
