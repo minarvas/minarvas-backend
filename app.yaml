@@ -17,3 +17,5 @@ automatic_scaling:
 env_variables:
   SERVICE_ENV: development
   NODE_ENV: development
+
+entrypoint: yarn start:prod
