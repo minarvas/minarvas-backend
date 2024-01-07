@@ -11,6 +11,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
 import { TradePostModule } from './trade-hub/trade-post.module';
+import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
+import { omit } from 'lodash';
 
 @Module({
   imports: [
@@ -24,6 +26,13 @@ import { TradePostModule } from './trade-hub/trade-post.module';
       resolvers: { ObjectId: ObjectIdScalar },
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       context: ({ req, res }) => ({ req, res }),
+      formatError: (error: GraphQLError) => {
+        const graphQLFormattedError: GraphQLFormattedError = {
+          message: error.message,
+          extensions: omit(error.extensions, ['stacktrace']),
+        };
+        return graphQLFormattedError;
+      },
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

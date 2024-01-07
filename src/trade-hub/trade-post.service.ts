@@ -4,6 +4,7 @@ import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
 import { Model, Types } from 'mongoose';
 import { CreateTradePostInput } from './inputs/trade-post.input';
 import { TradePostResponse } from './responses/trade-post.response';
+import { TradePostNotFound } from './exceptions/trade-post.exception';
 
 @Injectable()
 export class TradePostService {
@@ -11,6 +12,16 @@ export class TradePostService {
 
   async createTradePost(userId: Types.ObjectId, input: CreateTradePostInput) {
     const tradePost = await this.tradeHubModel.create({ ...input, authorId: userId });
+    return new TradePostResponse(tradePost);
+  }
+
+  async getTradePosts(tradePostId: string) {
+    const tradePost = await this.tradeHubModel.findById(tradePostId);
+
+    if (!tradePost) {
+      throw new TradePostNotFound(tradePostId);
+    }
+
     return new TradePostResponse(tradePost);
   }
 }

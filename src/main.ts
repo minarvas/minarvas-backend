@@ -1,6 +1,5 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import * as passport from 'passport';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { isProductEnv } from './common/utils/env.util';
@@ -11,7 +10,6 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.use(passport.initialize());
 
   app.enableCors({
     origin: !isProductEnv() ? true : customOrigin,
