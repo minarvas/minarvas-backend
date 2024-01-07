@@ -6,11 +6,12 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthorizedUser } from '../users/decorators/user.decorator';
 import { UserService } from '../users/user.service';
-import { AuthUrlInput, RefreshTokenInput } from './inputs/auth.input';
+import { AuthUrlInput } from './inputs/auth.input';
 import { AuthUrlResponse } from './responses/auth-url.response';
 import { GraphqlContext } from '../graphql/types/graphql-context.type';
+import { RefreshToken } from './decorators/refresh-token.decorator';
 
-@Resolver(() => UserResponse)
+@Resolver('Auth')
 export class AuthResolver {
   constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
 
@@ -26,8 +27,8 @@ export class AuthResolver {
   }
 
   @Mutation(() => UserResponse)
-  async refreshToken(@Input() input: RefreshTokenInput, @Context() context: GraphqlContext) {
-    const { jwtToken, user } = await this.authService.refreshToken(input.refreshToken);
+  async refreshToken(@RefreshToken() refreshToken: string, @Context() context: GraphqlContext) {
+    const { jwtToken, user } = await this.authService.refreshToken(refreshToken);
     context.res.header('Access-Token', jwtToken.accessToken);
     context.res.header('Refresh-Token', jwtToken.refreshToken);
     return user;
