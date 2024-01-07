@@ -10,8 +10,7 @@ import { CONFIG_OPTION } from './common/config/config-option.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
-import { TradeHubModule } from './trade-hub/trade-hub.module';
-import { UserModule } from './users/user.module';
+import { TradePostModule } from './trade-hub/trade-post.module';
 
 @Module({
   imports: [
@@ -37,8 +36,7 @@ import { UserModule } from './users/user.module';
       },
     }),
     AuthModule,
-    TradeHubModule,
-    UserModule,
+    TradePostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

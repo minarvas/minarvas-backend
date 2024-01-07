@@ -1,22 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { TradeAction } from '../enums/trade-action.enum';
+import { User } from '../../users/schemas/user.schema';
 
-export type TradeHubDocument = HydratedDocument<TradeHub>;
+export type TradePostDocument = HydratedDocument<TradePost>;
 
 @Schema({ timestamps: true })
-export class TradeHub {
+export class TradePost {
   @Prop({ required: true, enum: TradeAction })
   action: TradeAction;
 
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
-  content: string;
+  @Prop({ required: false })
+  description?: string;
 
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({ required: true })
+  price: number;
+
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: User.name })
   authorId: Types.ObjectId;
 }
 
-export const TradeHubSchema = SchemaFactory.createForClass(TradeHub);
+export const TradePostSchema = SchemaFactory.createForClass(TradePost);
