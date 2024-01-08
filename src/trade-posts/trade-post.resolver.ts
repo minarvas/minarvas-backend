@@ -3,7 +3,7 @@ import { TradePostService } from './trade-post.service';
 import { TradePostResponse } from './responses/trade-post.response';
 import { AuthorizedUser } from '../users/decorators/user.decorator';
 import { Input } from '../graphql/args/input.args';
-import { CreateTradePostInput, GetTradePostInput } from './inputs/trade-post.input';
+import { CreateTradePostInput, GetTradePostInput, UpdateTradePostInput } from './inputs/trade-post.input';
 import { Types } from 'mongoose';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guards/auth.guard';
@@ -21,5 +21,15 @@ export class TradePostResolver {
   @Query(() => TradePostResponse)
   async getTradePost(@Input() input: GetTradePostInput) {
     return this.tradeHubService.getTradePosts(input.tradePostId);
+  }
+
+  @Mutation(() => TradePostResponse)
+  async updateTradePost(@Input() input: UpdateTradePostInput) {
+    return this.tradeHubService.updateTradePost(input);
+  }
+
+  @Mutation(() => TradePostResponse)
+  async deleteTradePost(@Input() input: GetTradePostInput) {
+    return this.tradeHubService.deleteTradePost(input.tradePostId);
   }
 }

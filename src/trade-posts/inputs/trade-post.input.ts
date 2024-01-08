@@ -31,3 +31,27 @@ export class GetTradePostInput {
   @Length(24, 24)
   tradePostId: string;
 }
+
+@InputType()
+export class UpdateTradePostInput {
+  @Field()
+  @IsString()
+  @Length(24, 24)
+  tradePostId: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  title?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @Field({ nullable: true })
+  @IsPositive()
+  @IsInt()
+  @IsOptional()
+  price?: number;
+}

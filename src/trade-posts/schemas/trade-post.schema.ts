@@ -22,10 +22,10 @@ export class TradePost {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: User.name, index: true })
   authorId: Types.ObjectId;
 
-  @Prop({ required: true, index: true })
+  @Prop({ required: true, index: true, default: Date.now })
   createdAt: Date;
 
-  @Prop({ required: true, index: true })
+  @Prop({ required: true, index: true, default: Date.now })
   updatedAt: Date;
 }
 
