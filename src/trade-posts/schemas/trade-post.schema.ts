@@ -3,6 +3,7 @@ import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { TradeAction } from '../enums/trade-action.enum';
 import { User } from '../../users/schemas/user.schema';
 import { TradeStatus } from '../enums/trade-status.enum';
+import * as paginate from 'mongoose-paginate-v2';
 
 export type TradePostDocument = HydratedDocument<TradePost>;
 
@@ -33,4 +34,8 @@ export class TradePost {
   updatedAt: Date;
 }
 
-export const TradePostSchema = SchemaFactory.createForClass(TradePost);
+const TradePostSchema = SchemaFactory.createForClass(TradePost);
+
+TradePostSchema.plugin(paginate);
+
+export { TradePostSchema };

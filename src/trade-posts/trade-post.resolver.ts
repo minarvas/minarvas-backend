@@ -3,10 +3,16 @@ import { TradePostService } from './trade-post.service';
 import { TradePostResponse } from './responses/trade-post.response';
 import { AuthorizedUser } from '../users/decorators/user.decorator';
 import { Input } from '../graphql/args/input.args';
-import { CreateTradePostInput, GetTradePostInput, UpdateTradePostInput } from './inputs/trade-post.input';
+import {
+  CreateTradePostInput,
+  GetTradePostInput,
+  PaginateTradePostsInput,
+  UpdateTradePostInput,
+} from './inputs/trade-post.input';
 import { Types } from 'mongoose';
 import { Authorize } from '../auth/decorators/auth.decorator';
 import { TradePostAuth } from './decorators/trade-post-auth.decorator';
+import { TradePostPaginationResponse } from './responses/trade-post-pagination.response';
 
 @Resolver('TradeHub')
 export class TradePostResolver {
@@ -22,6 +28,11 @@ export class TradePostResolver {
   @Authorize()
   async getTradePost(@Input() input: GetTradePostInput) {
     return this.tradeHubService.getTradePost(input.tradePostId);
+  }
+
+  @Query(() => TradePostPaginationResponse)
+  async getTradePostList(@Input() input: PaginateTradePostsInput) {
+    return this.tradeHubService.getTradePostList(input);
   }
 
   @Mutation(() => TradePostResponse)

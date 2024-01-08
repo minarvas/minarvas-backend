@@ -31,7 +31,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
     Object.assign(this, {
       action: partial?.action,
       price: partial?.price,
-      authorId: partial?.authorId,
+      authorId: partial?.authorId.toHexString(),
       title: partial?.title,
       description: partial?.description,
       status: partial?.status,
