@@ -10,7 +10,7 @@ import { CONFIG_OPTION } from './common/config/config-option.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
-import { TradePostModule } from './trade-hub/trade-post.module';
+import { TradePostModule } from './trade-posts/trade-post.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
 import { omit } from 'lodash';
 
