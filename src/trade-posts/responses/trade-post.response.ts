@@ -4,6 +4,7 @@ import { BaseResponse } from '../../common/responses/base.response';
 import { TradeAction } from '../enums/trade-action.enum';
 import { Types } from 'mongoose';
 import { ObjectIdScalar } from '../../graphql/scalars/object-id.scalar';
+import { TradeStatus } from '../enums/trade-status.enum';
 
 @ObjectType()
 export class TradePostResponse extends BaseResponse implements ITradePost {
@@ -22,6 +23,9 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
   @Field({ nullable: true })
   description?: string;
 
+  @Field(() => TradeStatus)
+  status: TradeStatus;
+
   constructor(partial: Partial<TradePostResponse>) {
     super(partial);
     Object.assign(this, {
@@ -30,6 +34,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
       authorId: partial?.authorId,
       title: partial?.title,
       description: partial?.description,
+      status: partial?.status,
     });
   }
 }

@@ -6980,6 +6980,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mongoose-paginate-v2@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "mongoose-paginate-v2@npm:1.8.0"
+  checksum: 8c53ca9ffe791a9a580e74368331ef734e396913d4a8a162f129b08ee498c518c28b17f6a71b9933aa7ce16ee2cb5b54ff41b7324c196686c7c521f41a6d1d35
+  languageName: node
+  linkType: hard
+
 "mongoose@npm:^8.0.3":
   version: 8.0.3
   resolution: "mongoose@npm:8.0.3"
@@ -7170,6 +7177,7 @@ __metadata:
     joi: ^17.9.2
     lodash: ^4.17.21
     mongoose: ^8.0.3
+    mongoose-paginate-v2: ^1.8.0
     mysql2: ^3.5.0
     nanoid: 3
     passport: ^0.6.0

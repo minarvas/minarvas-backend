@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { TradeAction } from '../enums/trade-action.enum';
 import { User } from '../../users/schemas/user.schema';
+import { TradeStatus } from '../enums/trade-status.enum';
 
 export type TradePostDocument = HydratedDocument<TradePost>;
 
@@ -18,6 +19,9 @@ export class TradePost {
 
   @Prop({ required: true, index: true })
   price: number;
+
+  @Prop({ required: true, index: true, enum: TradeStatus, default: TradeStatus.OPEN })
+  status: TradeStatus;
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: User.name, index: true })
   authorId: Types.ObjectId;

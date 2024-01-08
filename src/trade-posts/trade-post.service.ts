@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
-import { Model, Types } from 'mongoose';
+import { TradePost, TradePostDocument, TradePostSchema } from './schemas/trade-post.schema';
+import mongoose, { Model, Types } from 'mongoose';
 import { CreateTradePostInput, UpdateTradePostInput } from './inputs/trade-post.input';
 import { TradePostResponse } from './responses/trade-post.response';
 import { TradePostNotFound } from './exceptions/trade-post.exception';
+import paginate from 'mongoose-paginate-v2';
 
 @Injectable()
 export class TradePostService {
@@ -23,6 +24,12 @@ export class TradePostService {
     }
 
     return new TradePostResponse(tradePost);
+  }
+
+  async getTradePostList() {
+    TradePostSchema.plugin(paginate);
+    const newModel = mongoose.model<TradePostDocument, mongoose.PaginateModel<TradePostDocument>>(TradePost.name);
+    const tradePostList = await newModel.paginate({}, { limit: 10 });
   }
 
   async updateTradePost(input: UpdateTradePostInput) {
