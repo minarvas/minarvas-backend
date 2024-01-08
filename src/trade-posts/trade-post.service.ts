@@ -15,7 +15,7 @@ export class TradePostService {
     return new TradePostResponse(tradePost);
   }
 
-  async getTradePosts(tradePostId: string) {
+  async getTradePost(tradePostId: string) {
     const tradePost = await this.tradePostModel.findById(tradePostId);
 
     if (!tradePost) {
