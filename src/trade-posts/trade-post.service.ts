@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
 import { Model, Types } from 'mongoose';
-import { CreateTradePostInput, PaginateTradePostsInput, UpdateTradePostInput } from './inputs/trade-post.input';
+import { CreateTradePostInput, PaginateTradePostInput, UpdateTradePostInput } from './inputs/trade-post.input';
 import { TradePostResponse } from './responses/trade-post.response';
 import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
 import { TradePostPaginationService } from './services/trade-post-pagination.service';
@@ -40,7 +40,7 @@ export class TradePostService {
     return new TradePostResponse(tradePost);
   }
 
-  async getTradePostList(input: PaginateTradePostsInput) {
+  async getTradePostList(input: PaginateTradePostInput) {
     return this.tradePostPaginationService.paginate(input.query, input.options);
   }
 

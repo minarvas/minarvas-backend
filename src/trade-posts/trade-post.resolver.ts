@@ -6,7 +6,7 @@ import { Input } from '../graphql/args/input.args';
 import {
   CreateTradePostInput,
   GetTradePostInput,
-  PaginateTradePostsInput,
+  PaginateTradePostInput,
   UpdateTradePostInput,
 } from './inputs/trade-post.input';
 import { Types } from 'mongoose';
@@ -31,7 +31,7 @@ export class TradePostResolver {
   }
 
   @Query(() => TradePostPaginationResponse)
-  async getTradePostList(@Input() input: PaginateTradePostsInput) {
+  async getTradePostList(@Input() input: PaginateTradePostInput) {
     return this.tradeHubService.getTradePostList(input);
   }
 

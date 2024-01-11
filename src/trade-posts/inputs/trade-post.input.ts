@@ -1,9 +1,19 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { TradeAction } from '../enums/trade-action.enum';
 import { ITradePost } from '../interfaces/trade-post.interface';
-import { IsEnum, IsInt, IsOptional, IsPositive, IsString, Length, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Length,
+  ValidateNested,
+} from 'class-validator';
 import { TradeStatus } from '../enums/trade-status.enum';
-import mongoose from 'mongoose';
+import { PaginateInput } from '../../common/inputs/pagination.input';
 import { Type } from 'class-transformer';
 
 @InputType()
@@ -66,58 +76,58 @@ export class UpdateTradePostInput implements Partial<ITradePost> {
 
 @InputType()
 export class PaginateTradePostQuery {
-  @Field(() => TradeAction, { nullable: true })
+  @Field(() => TradeAction, { nullable: true, description: 'Filter trade post which equals to input action' })
   @IsEnum(TradeAction)
   @IsOptional()
   action?: TradeAction;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Filter trade post which contains input title' })
   @IsString()
   @IsOptional()
   title?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Filter trade post which price is greater than or equal to input minPrice' })
   @IsPositive()
   @IsInt()
   @IsOptional()
-  price?: number;
+  minPrice?: number;
 
-  @Field({ nullable: true })
-  @IsEnum(TradeStatus)
+  @Field({ nullable: true, description: 'Filter trade post which price is less than or equal to input maxPrice' })
+  @IsPositive()
+  @IsInt()
   @IsOptional()
-  status?: TradeStatus;
+  maxPrice?: number;
+
+  @Field(() => [TradeStatus], {
+    nullable: true,
+    description: 'Filter trade post which status is included in input status',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsNotEmpty()
+  @IsEnum(TradeStatus, { each: true })
+  status?: TradeStatus[];
+
+  @Field({ nullable: true, description: 'Filter trade post which authorId is equal to input authorId' })
+  @IsString()
+  @IsOptional()
+  authorId?: string;
+
+  @Field({ nullable: true, description: 'Filter trade post which createdAt is greater than or equal to input start' })
+  @IsString()
+  @IsOptional()
+  start?: string;
+
+  @Field({ nullable: true, description: 'Filter trade post which createdAt is less than or equal to input end' })
+  @IsString()
+  @IsOptional()
+  end?: string;
 }
 
 @InputType()
-export class PaginateTradePostOption implements mongoose.PaginateOptions {
-  @Field({ nullable: true })
-  @IsPositive()
-  @IsInt()
-  @IsOptional()
-  page?: number;
-
-  @Field({ nullable: true })
-  @IsPositive()
-  @IsInt()
-  @IsOptional()
-  limit?: number;
-
-  @Field({ nullable: true })
-  @IsPositive()
-  @IsInt()
-  @IsOptional()
-  offset?: number;
-}
-
-@InputType()
-export class PaginateTradePostsInput {
+export class PaginateTradePostInput extends PaginateInput {
   @Field(() => PaginateTradePostQuery, { nullable: true })
   @ValidateNested()
   @Type(() => PaginateTradePostQuery)
   query: PaginateTradePostQuery;
-
-  @Field(() => PaginateTradePostOption, { nullable: true })
-  @ValidateNested()
-  @Type(() => PaginateTradePostOption)
-  options: PaginateTradePostOption;
 }

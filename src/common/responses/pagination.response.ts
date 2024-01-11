@@ -5,34 +5,34 @@ import { PaginateResult } from 'mongoose';
 export class PaginationResponse<T> implements PaginateResult<T> {
   docs: T[];
 
-  @Field()
+  @Field({ description: 'Whether there is a next page' })
   hasNextPage: boolean;
 
-  @Field()
+  @Field({ description: 'Whether there is a previous page' })
   hasPrevPage: boolean;
 
-  @Field()
+  @Field({ description: 'limit number of documents in each page' })
   limit: number;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Next page number' })
   nextPage: number | null | undefined;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Number of documents to skip' })
   offset: number;
 
-  @Field()
+  @Field({ description: 'Current page number' })
   page: number | undefined;
 
-  @Field()
+  @Field({ description: 'Number of documents skipped before this page' })
   pagingCounter: number;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Previous page number' })
   prevPage: number | null | undefined;
 
-  @Field()
+  @Field({ description: 'Total number of documents' })
   totalDocs: number;
 
-  @Field()
+  @Field({ description: 'Total number of pages' })
   totalPages: number;
 
   meta: any;
