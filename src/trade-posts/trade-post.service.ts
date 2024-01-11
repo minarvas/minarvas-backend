@@ -4,17 +4,28 @@ import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
 import { Model, Types } from 'mongoose';
 import { CreateTradePostInput, PaginateTradePostsInput, UpdateTradePostInput } from './inputs/trade-post.input';
 import { TradePostResponse } from './responses/trade-post.response';
-import { TradePostNotFound } from './exceptions/trade-post.exception';
+import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
 import { TradePostPaginationService } from './services/trade-post-pagination.service';
+import { endOfHour, startOfHour } from 'date-fns';
 
 @Injectable()
 export class TradePostService {
+  private readonly CREATION_MAX_IN_HOUR = 5;
+
   constructor(
     @InjectModel(TradePost.name) private readonly tradePostModel: Model<TradePostDocument>,
     private readonly tradePostPaginationService: TradePostPaginationService,
   ) {}
 
   async createTradePost(userId: Types.ObjectId, input: CreateTradePostInput) {
+    const start = startOfHour(new Date());
+    const end = endOfHour(new Date());
+    const count = await this.tradePostModel.countDocuments({ authorId: userId, createdAt: { $gte: start, $lte: end } });
+
+    if (count >= this.CREATION_MAX_IN_HOUR) {
+      throw new TradePostCreationMaxExceeded();
+    }
+
     const tradePost = await this.tradePostModel.create({ ...input, authorId: userId });
     return new TradePostResponse(tradePost);
   }
