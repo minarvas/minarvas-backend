@@ -19,7 +19,7 @@ export class CreateTradePostCommentInput {
 export class PaginateTradePostCommentInput extends PaginateInput {}
 
 @InputType()
-export class GetTradePostCommentInput {
+export class GetTradePostCommentListInput {
   @Field({ description: 'ID of the trade post' })
   @IsString()
   tradePostId: string;
@@ -28,4 +28,23 @@ export class GetTradePostCommentInput {
   @ValidateNested()
   @Type(() => PaginateTradePostCommentInput)
   pagination: PaginateTradePostCommentInput;
+}
+
+@InputType()
+export class DeleteTradePostCommentInput {
+  @Field({ description: 'ID of the trade post comment' })
+  @IsString()
+  tradePostCommentId: string;
+}
+
+@InputType()
+export class UpdateTradePostCommentInput {
+  @Field({ description: 'ID of the trade post comment' })
+  @IsString()
+  tradePostCommentId: string;
+
+  @Field({ description: 'New content of the trade post comment' })
+  @IsString()
+  @MinLength(1)
+  content: string;
 }

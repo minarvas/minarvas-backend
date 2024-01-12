@@ -3,7 +3,7 @@ import { TradePost } from '../schemas/trade-post.schema';
 import { FilterQuery, PaginateModel } from 'mongoose';
 import { PaginateTradePostQuery } from '../inputs/trade-post.input';
 import { InjectModel } from '@nestjs/mongoose';
-import { TradePostPaginationResponse, TradePostResponse } from '../responses/trade-post.response';
+import { TradePostList, TradePostResponse } from '../responses/trade-post.response';
 import { PaginateOption } from '../../common/inputs/pagination.input';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class TradePostPaginationService {
   async paginate(query: PaginateTradePostQuery = {}, options: PaginateOption) {
     const filter = this.getFilterQuery(query);
     const tradePostList = await this.tradePostModel.paginate(filter, options);
-    return new TradePostPaginationResponse({ ...tradePostList, docs: this.mapDocsToResponse(tradePostList.docs) });
+    return new TradePostList({ ...tradePostList, docs: this.mapDocsToResponse(tradePostList.docs) });
   }
 
   private getFilterQuery({ title, minPrice, maxPrice, start, end, ...rest }: PaginateTradePostQuery) {

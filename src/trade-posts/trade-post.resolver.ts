@@ -1,6 +1,6 @@
 import { Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { TradePostService } from './trade-post.service';
-import { TradePostPaginationResponse, TradePostResponse } from './responses/trade-post.response';
+import { TradePostList, TradePostResponse } from './responses/trade-post.response';
 import { AuthorizedUser } from '../users/decorators/user.decorator';
 import { Input } from '../graphql/args/input.args';
 import {
@@ -31,7 +31,7 @@ export class TradePostResolver {
     return this.tradePostService.getTradePost(input.tradePostId);
   }
 
-  @Query(() => TradePostPaginationResponse)
+  @Query(() => TradePostList)
   async getTradePostList(@Input() input: PaginateTradePostInput) {
     return this.tradePostService.getTradePostList(input);
   }
@@ -47,7 +47,7 @@ export class TradePostResolver {
     return this.tradePostService.updateTradePost(input);
   }
 
-  @Mutation(() => TradePostResponse)
+  @Mutation(() => TradePostResponse, { nullable: true })
   @TradePostAuth()
   async deleteTradePost(@Input() input: GetTradePostInput) {
     return this.tradePostService.deleteTradePost(input.tradePostId);

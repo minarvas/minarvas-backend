@@ -5,7 +5,12 @@ import { Authorize } from '../../auth/decorators/auth.decorator';
 import { AuthorizedUser } from '../../users/decorators/user.decorator';
 import { Types } from 'mongoose';
 import { Input } from '../../graphql/args/input.args';
-import { CreateTradePostCommentInput, GetTradePostCommentInput } from '../inputs/trade-post-comment.input';
+import {
+  CreateTradePostCommentInput,
+  DeleteTradePostCommentInput,
+  GetTradePostCommentListInput,
+  UpdateTradePostCommentInput,
+} from '../inputs/trade-post-comment.input';
 import { UserResponse } from '../../users/responses/user.response';
 import { UserService } from '../../users/user.service';
 
@@ -26,8 +31,20 @@ export class TradePostCommentResolver {
   }
 
   @Query(() => TradePostCommentList)
-  async getTradePostCommentList(@Input() input: GetTradePostCommentInput) {
+  async getTradePostCommentList(@Input() input: GetTradePostCommentListInput) {
     return this.tradePostCommentService.getTradePostCommentList(input);
+  }
+
+  @Mutation(() => TradePostCommentResponse)
+  @Authorize()
+  async updateTradePostComment(@Input() input: UpdateTradePostCommentInput) {
+    return this.tradePostCommentService.updateTradePostComment(input);
+  }
+
+  @Mutation(() => TradePostCommentResponse, { nullable: true })
+  @Authorize()
+  async deleteTradePostComment(@Input() input: DeleteTradePostCommentInput) {
+    return this.tradePostCommentService.deleteTradePostComment(input.tradePostCommentId);
   }
 
   @ResolveField(() => UserResponse)

@@ -43,11 +43,11 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
 }
 
 @ObjectType()
-export class TradePostPaginationResponse extends PaginationResponse<TradePostResponse> {
+export class TradePostList extends PaginationResponse<TradePostResponse> {
   @Field(() => [TradePostResponse])
   docs: TradePostResponse[];
 
-  constructor(partial: Partial<TradePostPaginationResponse>) {
+  constructor(partial: Partial<TradePostList>) {
     super(partial);
     Object.assign(this, {
       docs: partial?.docs,
