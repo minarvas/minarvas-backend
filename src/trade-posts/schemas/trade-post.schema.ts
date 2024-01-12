@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { TradeAction } from '../enums/trade-action.enum';
-import { User } from '../../users/schemas/user.schema';
 import { TradeStatus } from '../enums/trade-status.enum';
 import * as paginate from 'mongoose-paginate-v2';
+import { User } from '../../users/schemas/user.schema';
 
 export type TradePostDocument = HydratedDocument<TradePost>;
 
@@ -24,7 +24,7 @@ export class TradePost {
   @Prop({ required: true, index: true, enum: TradeStatus, default: TradeStatus.OPEN })
   status: TradeStatus;
 
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: User.name, index: true })
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name })
   authorId: Types.ObjectId;
 
   @Prop({ required: true, index: true, default: Date.now })

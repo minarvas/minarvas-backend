@@ -3,8 +3,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseResponse } from '../../common/responses/base.response';
 import { TradeAction } from '../enums/trade-action.enum';
 import { Types } from 'mongoose';
-import { ObjectIdScalar } from '../../graphql/scalars/object-id.scalar';
 import { TradeStatus } from '../enums/trade-status.enum';
+import { UserResponse } from '../../users/responses/user.response';
 
 @ObjectType()
 export class TradePostResponse extends BaseResponse implements ITradePost {
@@ -14,8 +14,11 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
   @Field()
   price: number;
 
-  @Field((_) => ObjectIdScalar)
+  // @Field((_) => ObjectIdScalar)
   authorId: Types.ObjectId;
+
+  @Field((_) => UserResponse, { description: 'The author of the trade post' })
+  author: UserResponse;
 
   @Field()
   title: string;
