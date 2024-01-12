@@ -21,6 +21,7 @@ export class UserService {
 
   async getUser(userId: Types.ObjectId): Promise<UserResponse> {
     const user: UserDocument = await this.userModel.findById(userId);
+    console.log(user);
     return new UserResponse(user);
   }
 

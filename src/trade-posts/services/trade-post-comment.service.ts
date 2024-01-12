@@ -56,4 +56,9 @@ export class TradePostCommentService {
     });
     return new TradePostCommentResponse(tradePostComment);
   }
+
+  async getTradePostComment(tradePostCommentId: string) {
+    const tradePostComment = await this.tradePostCommentModel.findById(tradePostCommentId);
+    return new TradePostCommentResponse(tradePostComment);
+  }
 }

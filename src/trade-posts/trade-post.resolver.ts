@@ -10,7 +10,7 @@ import {
   UpdateTradePostInput,
 } from './inputs/trade-post.input';
 import { Types } from 'mongoose';
-import { Authorize } from '../auth/decorators/auth.decorator';
+import { UserAuth } from '../auth/decorators/auth.decorator';
 import { TradePostAuth } from './decorators/trade-post-auth.decorator';
 import { UserService } from '../users/user.service';
 import { UserResponse } from '../users/responses/user.response';
@@ -20,13 +20,13 @@ export class TradePostResolver {
   constructor(private readonly tradePostService: TradePostService, private readonly userService: UserService) {}
 
   @Mutation(() => TradePostResponse)
-  @Authorize()
+  @UserAuth()
   async createTradePost(@AuthorizedUser('_id') userId: Types.ObjectId, @Input() input: CreateTradePostInput) {
     return this.tradePostService.createTradePost(userId, input);
   }
 
   @Query(() => TradePostResponse)
-  @Authorize()
+  @UserAuth()
   async getTradePost(@Input() input: GetTradePostInput) {
     return this.tradePostService.getTradePost(input.tradePostId);
   }
