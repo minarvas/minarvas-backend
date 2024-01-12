@@ -1,6 +1,6 @@
 import { Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { TradePostService } from './trade-post.service';
-import { TradePostResponse } from './responses/trade-post.response';
+import { TradePostPaginationResponse, TradePostResponse } from './responses/trade-post.response';
 import { AuthorizedUser } from '../users/decorators/user.decorator';
 import { Input } from '../graphql/args/input.args';
 import {
@@ -12,7 +12,6 @@ import {
 import { Types } from 'mongoose';
 import { Authorize } from '../auth/decorators/auth.decorator';
 import { TradePostAuth } from './decorators/trade-post-auth.decorator';
-import { TradePostPaginationResponse } from './responses/trade-post-pagination.response';
 import { UserService } from '../users/user.service';
 import { UserResponse } from '../users/responses/user.response';
 

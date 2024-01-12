@@ -4,6 +4,7 @@ import { TradeAction } from '../enums/trade-action.enum';
 import { TradeStatus } from '../enums/trade-status.enum';
 import * as paginate from 'mongoose-paginate-v2';
 import { User } from '../../users/schemas/user.schema';
+import { TradePostComment } from './trade-post-comment.schema';
 
 export type TradePostDocument = HydratedDocument<TradePost>;
 
@@ -26,6 +27,9 @@ export class TradePost {
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name })
   authorId: Types.ObjectId;
+
+  @Prop({ required: false, type: [{ type: mongoose.Schema.Types.ObjectId, ref: TradePostComment.name }] })
+  comments?: TradePostComment[];
 
   @Prop({ required: true, index: true, default: Date.now })
   createdAt: Date;

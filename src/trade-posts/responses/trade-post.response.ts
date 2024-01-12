@@ -5,6 +5,7 @@ import { TradeAction } from '../enums/trade-action.enum';
 import { Types } from 'mongoose';
 import { TradeStatus } from '../enums/trade-status.enum';
 import { UserResponse } from '../../users/responses/user.response';
+import { PaginationResponse } from '../../common/responses/pagination.response';
 
 @ObjectType()
 export class TradePostResponse extends BaseResponse implements ITradePost {
@@ -14,7 +15,6 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
   @Field()
   price: number;
 
-  // @Field((_) => ObjectIdScalar)
   authorId: Types.ObjectId;
 
   @Field((_) => UserResponse, { description: 'The author of the trade post' })
@@ -38,6 +38,19 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
       title: partial?.title,
       description: partial?.description,
       status: partial?.status,
+    });
+  }
+}
+
+@ObjectType()
+export class TradePostPaginationResponse extends PaginationResponse<TradePostResponse> {
+  @Field(() => [TradePostResponse])
+  docs: TradePostResponse[];
+
+  constructor(partial: Partial<TradePostPaginationResponse>) {
+    super(partial);
+    Object.assign(this, {
+      docs: partial?.docs,
     });
   }
 }

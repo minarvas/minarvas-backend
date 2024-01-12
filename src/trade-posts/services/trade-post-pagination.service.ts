@@ -3,8 +3,7 @@ import { TradePost } from '../schemas/trade-post.schema';
 import { FilterQuery, PaginateModel } from 'mongoose';
 import { PaginateTradePostQuery } from '../inputs/trade-post.input';
 import { InjectModel } from '@nestjs/mongoose';
-import { TradePostResponse } from '../responses/trade-post.response';
-import { TradePostPaginationResponse } from '../responses/trade-post-pagination.response';
+import { TradePostPaginationResponse, TradePostResponse } from '../responses/trade-post.response';
 import { PaginateOption } from '../../common/inputs/pagination.input';
 
 @Injectable()
