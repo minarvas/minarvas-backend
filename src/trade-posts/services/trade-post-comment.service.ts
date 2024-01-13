@@ -40,14 +40,9 @@ export class TradePostCommentService {
   }
 
   async deleteTradePostComment(tradePostCommentId: string) {
-    const tradePostComment = await this.tradePostCommentModel.findById(tradePostCommentId);
-
-    if (!tradePostComment) {
-      throw null;
-    }
-
+    const tradePostComment = await this.getTradePostComment(tradePostCommentId);
     await this.tradePostCommentModel.findByIdAndDelete(tradePostCommentId);
-    return new TradePostCommentResponse(tradePostComment);
+    return tradePostComment;
   }
 
   async updateTradePostComment({ tradePostCommentId, ...rest }: UpdateTradePostCommentInput) {
@@ -59,6 +54,9 @@ export class TradePostCommentService {
 
   async getTradePostComment(tradePostCommentId: string) {
     const tradePostComment = await this.tradePostCommentModel.findById(tradePostCommentId);
+    if (!tradePostComment) {
+      throw null;
+    }
     return new TradePostCommentResponse(tradePostComment);
   }
 }

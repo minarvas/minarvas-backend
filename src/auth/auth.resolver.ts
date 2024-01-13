@@ -15,18 +15,21 @@ import { RefreshToken } from './decorators/refresh-token.decorator';
 export class AuthResolver {
   constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
 
-  @Query(() => AuthUrlResponse)
+  @Query(() => AuthUrlResponse, { description: `Get authorization url for social login` })
   async getAuthUrl(@Input() input: AuthUrlInput) {
     return await this.authService.getAuthUrl(input.provider);
   }
 
-  @Query(() => UserResponse)
+  @Query(() => UserResponse, { description: `Get user information with access-token in request authorization header` })
   @UseGuards(AuthGuard)
   async me(@AuthorizedUser() user: UserResponse) {
     return user;
   }
 
-  @Mutation(() => UserResponse)
+  @Mutation(() => UserResponse, {
+    description: `Refresh access-token and refresh-token with refresh-token in request authorization header.\n 
+    You can get new access-token and refresh-token in response header ( Access-Token, Refresh-Token ).`,
+  })
   async refreshToken(@RefreshToken() refreshToken: string, @Context() context: GraphqlContext) {
     const { jwtToken, user } = await this.authService.refreshToken(refreshToken);
     context.res.header('Access-Token', jwtToken.accessToken);

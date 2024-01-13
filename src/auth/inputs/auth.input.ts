@@ -4,7 +4,7 @@ import { IsEnum } from 'class-validator';
 
 @InputType()
 export class AuthUrlInput {
-  @Field(() => UserProvider)
+  @Field(() => UserProvider, { description: `User provider like kakao` })
   @IsEnum(UserProvider)
   provider: UserProvider;
 }
