@@ -54,7 +54,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggingMiddleware).forRoutes({
       path: 'graphql',
-      method: RequestMethod.GET,
+      method: RequestMethod.ALL,
     });
   }
 }
