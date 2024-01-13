@@ -10,7 +10,7 @@ export class LoggingMiddleware implements NestMiddleware {
     const operationName = req.body?.operationName;
     const variables = req.body?.variables;
 
-    if (operationName.startsWith('IntrospectionQuery')) {
+    if (!operationName || operationName.startsWith('IntrospectionQuery')) {
       return next();
     }
 
