@@ -27,13 +27,16 @@ export class AuthResolver {
   }
 
   @Mutation(() => UserResponse, {
-    description: `Refresh access-token and refresh-token with refresh-token in request authorization header.\n 
+    description: `Refresh access-token and refresh-token with refresh-tzoken in request authorization header.\n 
     You can get new access-token and refresh-token in response header ( Access-Token, Refresh-Token ).`,
   })
   async refreshToken(@RefreshToken() refreshToken: string, @Context() context: GraphqlContext) {
     const { jwtToken, user } = await this.authService.refreshToken(refreshToken);
     context.res.header('Access-Token', jwtToken.accessToken);
-    context.res.header('Refresh-Token', jwtToken.refreshToken);
+    context.res.cookie('Refresh-Token', jwtToken.refreshToken);
+    context.res.header('Access-Control-Expose-Headers', 'Access-Token, Refresh-Token');
+    context.res.header('Access-Control-Allow-Credentials', 'true');
+    context.res.header('Access-Control-Allow-Origin', 'https://sandbox.embed.apollographql.com');
     return user;
   }
 }

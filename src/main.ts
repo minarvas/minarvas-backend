@@ -6,6 +6,7 @@ import { isProductEnv } from './common/utils/env.util';
 import { customOrigin } from './common/utils/cors.util';
 import { ValidationError } from 'class-validator';
 import { ValidationException } from './common/exceptions/validation.exception';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +20,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-
+  app.use(cookieParser());
   app.enableCors({
     origin: !isProductEnv() ? true : customOrigin,
     methods: ['GET', 'HEAD', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
