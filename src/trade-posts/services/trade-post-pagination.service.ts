@@ -12,7 +12,7 @@ export class TradePostPaginationService {
 
   async paginate(query: PaginateTradePostQuery = {}, options: PaginateOption) {
     const filter = this.getFilterQuery(query);
-    const tradePostList = await this.tradePostModel.paginate(filter, { ...options });
+    const tradePostList = await this.tradePostModel.paginate(filter, { ...options, sort: { description: 1 } });
     return new TradePostList({ ...tradePostList, docs: this.mapDocsToResponse(tradePostList.docs) });
   }
 

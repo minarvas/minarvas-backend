@@ -27,7 +27,7 @@ export class AuthService {
     private readonly kakaoService: KakaoService,
   ) {
     this.kakaoClientId = this.configService.get<string>('KAKAO_CLIENT_ID');
-    this.kakaoRedirectUrl = this.configService.get<string>('KAKAO_REDIRECT_URI');
+    this.kakaoRedirectUrl = `${this.configService.get<string>('HOST')}/auth/kakao/callback`;
     this.kakaoSecret = this.configService.get<string>('KAKAO_SECRET');
   }
 

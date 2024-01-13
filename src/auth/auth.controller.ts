@@ -6,16 +6,31 @@ import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
+  private readonly host: string;
+  private readonly clientRedirectionUrl: string;
+  private readonly serviceEnv;
+
+  constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {
+    this.host = this.configService.get<string>('HOST');
+    this.clientRedirectionUrl = this.configService.get<string>('CLIENT');
+    this.serviceEnv = this.configService.get<string>('SERVICE_ENV');
+    console.log(this.serviceEnv);
+  }
 
   @Get('kakao/callback')
   async authKakao(@Query() query: KakaoRedirectInput, @Res() res: Response) {
-    const client = this.configService.get<string>('CLIENT');
     const { accessToken, refreshToken } = await this.authService.signupByKakao(query);
-    res.cookie('Refresh-Token', refreshToken);
-    res.header('Access-Control-Expose-Headers', 'Access-Token, Refresh-Token');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Origin', 'https://sandbox.embed.apollographql.com');
-    res.redirect(`${client}/auth?accessToken=${accessToken}`);
+
+    res
+      .cookie('Refresh-Token', refreshToken, {
+        sameSite: 'none',
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        secure: true,
+      })
+      .header('Access-Control-Expose-Headers', 'Access-Token, Refresh-Token')
+      .header('Access-Control-Allow-Credentials', 'true')
+      .header('Access-Control-Allow-Origin', 'https://sandbox.embed.apollographql.com')
+      .redirect(`${this.clientRedirectionUrl}?accessToken=${accessToken}`);
   }
 }
