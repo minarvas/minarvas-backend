@@ -1,4 +1,5 @@
 import { UseGuards } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Input } from '../graphql/args/input.args';
 import { GraphqlContext } from '../graphql/types/graphql-context.type';
@@ -12,7 +13,11 @@ import { AuthUrlResponse } from './responses/auth-url.response';
 
 @Resolver('Auth')
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) {}
+  private readonly host: string;
+
+  constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {
+    this.host = this.configService.get<string>('HOST');
+  }
 
   @Query(() => AuthUrlResponse, { description: `Get authorization url for social login` })
   async getAuthUrl(@Input() input: AuthUrlInput) {
@@ -31,11 +36,13 @@ export class AuthResolver {
   })
   async refreshToken(@RefreshToken() refreshToken: string, @Context() context: GraphqlContext) {
     const { jwtToken, user } = await this.authService.refreshToken(refreshToken);
-    context.res.header('Access-Token', jwtToken.accessToken);
-    context.res.cookie('Refresh-Token', jwtToken.refreshToken);
-    context.res.header('Access-Control-Expose-Headers', 'Access-Token');
-    context.res.header('Access-Control-Allow-Credentials', 'true');
-    context.res.header('Access-Control-Allow-Origin', 'https://sandbox.embed.apollographql.com');
+    context.res
+      .cookie('Refresh-Token', jwtToken.refreshToken)
+      .header('Access-Token', jwtToken.accessToken)
+      .header('Access-Control-Expose-Headers', 'Access-Token')
+      .header('Access-Control-Allow-Credentials', 'true')
+      .header('Access-Control-Allow-Origin', this.host);
+
     return user;
   }
 }
