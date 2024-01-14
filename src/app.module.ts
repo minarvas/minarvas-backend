@@ -3,16 +3,18 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { MongooseModule } from '@nestjs/mongoose';
+import { S3, SharedIniFileCredentials } from 'aws-sdk';
+import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
+import { omit } from 'lodash';
+import { AwsSdkModule } from 'nest-aws-sdk';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CONFIG_OPTION } from './common/config/config-option.schema';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
+import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 import { TradePostModule } from './trade-posts/trade-post.module';
-import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
-import { omit } from 'lodash';
 
 @Module({
   imports: [
@@ -43,6 +45,17 @@ import { omit } from 'lodash';
           dbName: configService.get<string>('MONGODB_DATABASE'),
         };
       },
+    }),
+    AwsSdkModule.forRootAsync({
+      defaultServiceOptions: {
+        useFactory: (configService: ConfigService) => ({
+          region: configService.get<string>('AWS_REGION'),
+          credentials: new SharedIniFileCredentials({ profile: configService.get<string>('AWS_PROFILE') }),
+        }),
+        imports: [ConfigModule],
+        inject: [ConfigService],
+      },
+      services: [S3],
     }),
     AuthModule,
     TradePostModule,

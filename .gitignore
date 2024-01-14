@@ -37,3 +37,5 @@ lerna-debug.log*
 .DS_Store
 .yarn/cache
 /environments
+
+.aws/

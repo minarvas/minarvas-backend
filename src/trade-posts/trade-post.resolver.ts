@@ -1,19 +1,19 @@
 import { Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { TradePostService } from './trade-post.service';
-import { TradePostList, TradePostResponse } from './responses/trade-post.response';
-import { AuthorizedUser } from '../users/decorators/user.decorator';
+import { Types } from 'mongoose';
+import { UserAuth } from '../auth/decorators/auth.decorator';
 import { Input } from '../graphql/args/input.args';
+import { AuthorizedUser } from '../users/decorators/user.decorator';
+import { UserResponse } from '../users/responses/user.response';
+import { UserService } from '../users/user.service';
+import { TradePostAuth } from './decorators/trade-post-auth.decorator';
 import {
   CreateTradePostInput,
   GetTradePostInput,
   PaginateTradePostInput,
   UpdateTradePostInput,
 } from './inputs/trade-post.input';
-import { Types } from 'mongoose';
-import { UserAuth } from '../auth/decorators/auth.decorator';
-import { TradePostAuth } from './decorators/trade-post-auth.decorator';
-import { UserService } from '../users/user.service';
-import { UserResponse } from '../users/responses/user.response';
+import { TradePostList, TradePostResponse } from './responses/trade-post.response';
+import { TradePostService } from './trade-post.service';
 
 @Resolver(() => TradePostResponse)
 export class TradePostResolver {
@@ -21,8 +21,8 @@ export class TradePostResolver {
 
   @Mutation(() => TradePostResponse)
   @UserAuth()
-  async createTradePost(@AuthorizedUser('_id') userId: Types.ObjectId, @Input() input: CreateTradePostInput) {
-    return this.tradePostService.createTradePost(userId, input);
+  async createTradePost(@AuthorizedUser('_id') authorId: Types.ObjectId, @Input() input: CreateTradePostInput) {
+    return this.tradePostService.createTradePost(authorId, input);
   }
 
   @Query(() => TradePostResponse)
