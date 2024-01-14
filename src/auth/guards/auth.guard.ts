@@ -1,14 +1,16 @@
-import { CanActivate, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { GqlExecutionContext } from '@nestjs/graphql';
-import { Request } from 'express';
+import { CanActivate, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 import { UserService } from '../../users/user.service';
 import { JwtPayload } from '../dto/jwt.dto';
 import { UnauthorizedException } from '../exceptions/auth.exception';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly logger = new Logger(AuthGuard.name);
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -21,6 +23,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
+      this.logger.error('No access token in request header');
       throw new UnauthorizedException();
     }
 
@@ -31,6 +34,7 @@ export class AuthGuard implements CanActivate {
 
       request['user'] = await this.userService.getUser(payload.userId);
     } catch (err) {
+      this.logger.error('Fail to verify access token', err);
       throw new UnauthorizedException();
     }
 

@@ -27,9 +27,6 @@ export class AuthController {
       })
       .header('Access-Control-Allow-Credentials', 'true')
       .header('Access-Control-Allow-Origin', this.host)
-      .redirect(
-        HttpStatus.MOVED_PERMANENTLY,
-        `${this.clientRedirectionUrl}?accessToken=${accessToken}?refreshToken=${refreshToken}`,
-      );
+      .redirect(HttpStatus.MOVED_PERMANENTLY, `${this.clientRedirectionUrl}?accessToken=${accessToken}`);
   }
 }
