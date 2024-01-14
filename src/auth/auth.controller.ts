@@ -30,7 +30,7 @@ export class AuthController {
       })
       .header('Access-Control-Expose-Headers', 'Access-Token, Refresh-Token')
       .header('Access-Control-Allow-Credentials', 'true')
-      .header('Access-Control-Allow-Origin', 'https://sandbox.embed.apollographql.com')
+      .header('Access-Control-Allow-Origin', this.host)
       .redirect(`${this.clientRedirectionUrl}?accessToken=${accessToken}`);
   }
 }
