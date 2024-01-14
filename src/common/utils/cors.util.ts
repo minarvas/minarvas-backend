@@ -3,7 +3,13 @@
  * ActionPower Corporation PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-const corsWhitelist = [process.env.CLIENT, 'http://localhost', 'https://sandbox.embed.apollographql.com'];
+const corsWhitelist = [
+  process.env.CLIENT,
+  'http://localhost',
+  'https://sandbox.embed.apollographql.com',
+  'https://studio.apollographql.com',
+  'https://kauth.kakao',
+];
 
 const validateOrigin = (origin: string, whitelist: string[] = corsWhitelist): boolean => {
   if (!origin) {

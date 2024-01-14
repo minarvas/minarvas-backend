@@ -1,12 +1,12 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import helmet from 'helmet';
-import { isProductEnv } from './common/utils/env.util';
-import { customOrigin } from './common/utils/cors.util';
 import { ValidationError } from 'class-validator';
-import { ValidationException } from './common/exceptions/validation.exception';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import { AppModule } from './app.module';
+import { ValidationException } from './common/exceptions/validation.exception';
+import { customOrigin } from './common/utils/cors.util';
+import { isProductEnv } from './common/utils/env.util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,7 +22,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.use(cookieParser());
   app.enableCors({
-    origin: !isProductEnv() ? true : customOrigin,
+    origin: customOrigin,
     methods: ['GET', 'HEAD', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'X-Requested-With',

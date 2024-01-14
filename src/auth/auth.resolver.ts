@@ -13,10 +13,10 @@ import { AuthUrlResponse } from './responses/auth-url.response';
 
 @Resolver('Auth')
 export class AuthResolver {
-  private readonly host: string;
+  private readonly client: string;
 
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {
-    this.host = this.configService.get<string>('HOST');
+    this.client = this.configService.get<string>('CLIENT');
   }
 
   @Query(() => AuthUrlResponse, { description: `Get authorization url for social login` })
@@ -41,7 +41,7 @@ export class AuthResolver {
       .header('Access-Token', jwtToken.accessToken)
       .header('Access-Control-Expose-Headers', 'Access-Token')
       .header('Access-Control-Allow-Credentials', 'true')
-      .header('Access-Control-Allow-Origin', this.host);
+      .header('Access-Control-Allow-Origin', this.client);
 
     return user;
   }

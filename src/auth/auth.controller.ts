@@ -17,6 +17,7 @@ export class AuthController {
   @Get('kakao/callback')
   async authKakao(@Query() query: KakaoRedirectInput, @Res() res: Response) {
     const { accessToken, refreshToken } = await this.authService.signupByKakao(query);
+    console.log(accessToken, refreshToken);
 
     res
       .cookie('Refresh-Token', refreshToken, {
