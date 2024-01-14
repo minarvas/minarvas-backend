@@ -1,11 +1,12 @@
-import { ITradePost } from '../interfaces/trade-post.interface';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BaseResponse } from '../../common/responses/base.response';
-import { TradeAction } from '../enums/trade-action.enum';
 import { Types } from 'mongoose';
-import { TradeStatus } from '../enums/trade-status.enum';
-import { UserResponse } from '../../users/responses/user.response';
+import { BaseResponse } from '../../common/responses/base.response';
 import { PaginationResponse } from '../../common/responses/pagination.response';
+import { UserResponse } from '../../users/responses/user.response';
+import { TradeAction } from '../enums/trade-action.enum';
+import { TradeStatus } from '../enums/trade-status.enum';
+import { ITradePost } from '../interfaces/trade-post.interface';
+import { TradePostComment } from '../schemas/trade-post-comment.schema';
 
 @ObjectType()
 export class TradePostResponse extends BaseResponse implements ITradePost {
@@ -29,6 +30,11 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
   @Field(() => TradeStatus)
   status: TradeStatus;
 
+  @Field({ description: 'The number of comments in the trade post' })
+  commentsCount: number;
+
+  comments: TradePostComment[];
+
   constructor(partial: Partial<TradePostResponse>) {
     super(partial);
     Object.assign(this, {
@@ -38,6 +44,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
       title: partial?.title,
       description: partial?.description,
       status: partial?.status,
+      commentsCount: partial?.comments.length || 0,
     });
   }
 }
