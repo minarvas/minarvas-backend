@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { TradePost } from '../schemas/trade-post.schema';
-import { FilterQuery, PaginateModel } from 'mongoose';
-import { PaginateTradePostQuery } from '../inputs/trade-post.input';
 import { InjectModel } from '@nestjs/mongoose';
-import { TradePostList, TradePostResponse } from '../responses/trade-post.response';
+import { FilterQuery, PaginateModel } from 'mongoose';
 import { PaginateOption } from '../../common/inputs/pagination.input';
+import { PaginateTradePostQuery } from '../inputs/trade-post.input';
+import { TradePostList, TradePostResponse } from '../responses/trade-post.response';
+import { TradePost } from '../schemas/trade-post.schema';
 
 @Injectable()
 export class TradePostPaginationService {
@@ -12,7 +12,7 @@ export class TradePostPaginationService {
 
   async paginate(query: PaginateTradePostQuery = {}, options: PaginateOption) {
     const filter = this.getFilterQuery(query);
-    const tradePostList = await this.tradePostModel.paginate(filter, { ...options, sort: { description: 1 } });
+    const tradePostList = await this.tradePostModel.paginate(filter, options);
     return new TradePostList({ ...tradePostList, docs: this.mapDocsToResponse(tradePostList.docs) });
   }
 

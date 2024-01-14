@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
-import mongoose from 'mongoose';
-import { IsInt, IsOptional, IsPositive, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsInt, IsOptional, IsPositive, ValidateNested } from 'class-validator';
+import mongoose from 'mongoose';
 
 @InputType()
 export class PaginateOption implements mongoose.PaginateOptions {
@@ -22,6 +22,8 @@ export class PaginateOption implements mongoose.PaginateOptions {
   @IsInt()
   @IsOptional()
   offset?: number;
+
+  sort: object;
 }
 
 @InputType()

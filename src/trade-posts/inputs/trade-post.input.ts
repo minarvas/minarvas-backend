@@ -1,6 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { TradeAction } from '../enums/trade-action.enum';
-import { ITradePost } from '../interfaces/trade-post.interface';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
@@ -12,9 +11,11 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
+import { SortDirection } from '../../common/enums/pagination.enum';
+import { PaginateInput, PaginateOption } from '../../common/inputs/pagination.input';
+import { TradeAction } from '../enums/trade-action.enum';
 import { TradeStatus } from '../enums/trade-status.enum';
-import { PaginateInput } from '../../common/inputs/pagination.input';
-import { Type } from 'class-transformer';
+import { ITradePost } from '../interfaces/trade-post.interface';
 
 @InputType()
 export class CreateTradePostInput implements Omit<ITradePost, 'authorId' | 'status'> {
@@ -125,9 +126,35 @@ export class PaginateTradePostQuery {
 }
 
 @InputType()
+export class TradePostSortOption {
+  @Field(() => SortDirection, { nullable: true, description: 'Sort trade post by createTime.' })
+  @IsEnum(SortDirection)
+  @IsOptional()
+  createdAt?: SortDirection;
+
+  @Field(() => SortDirection, { nullable: true, description: 'Sort trade post by price.' })
+  @IsEnum(SortDirection)
+  @IsOptional()
+  price?: SortDirection;
+}
+
+@InputType()
+export class PaginateTradePostOption extends PaginateOption {
+  @Field(() => TradePostSortOption, { nullable: true })
+  @ValidateNested()
+  @Type(() => TradePostSortOption)
+  sort: TradePostSortOption;
+}
+
+@InputType()
 export class PaginateTradePostInput extends PaginateInput {
   @Field(() => PaginateTradePostQuery, { nullable: true })
   @ValidateNested()
   @Type(() => PaginateTradePostQuery)
   query: PaginateTradePostQuery;
+
+  @Field(() => PaginateTradePostOption, { nullable: true })
+  @ValidateNested()
+  @Type(() => PaginateTradePostOption)
+  options: PaginateTradePostOption;
 }

@@ -6,6 +6,7 @@
 const corsWhitelist = [
   process.env.CLIENT,
   'http://localhost',
+  'https://mapleland.vercel.app',
   'https://sandbox.embed.apollographql.com',
   'https://studio.apollographql.com',
   'https://kauth.kakao',
