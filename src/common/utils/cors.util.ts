@@ -5,12 +5,14 @@
 
 const corsWhitelist = [
   process.env.CLIENT,
+  process.env.HOST,
   'http://54.180.116.236',
   'http://localhost',
   'https://mapleland.vercel.app',
   'https://sandbox.embed.apollographql.com',
   'https://studio.apollographql.com',
   'https://kauth.kakao',
+  'https://mapleland.p-e.kr',
 ];
 
 const validateOrigin = (origin: string, whitelist: string[] = corsWhitelist): boolean => {
