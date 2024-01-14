@@ -9,7 +9,7 @@ echo "Image version:$version"
 existing_image=$(docker images -q minarvas:$version)
 if [ ! -z "$existing_image" ]; then
   echo "Removing existing image $existing_image"
-  docker rmi $existing_image
+  docker rmi $existing_image -f
 fi
 
 # 3. 이미지 빌드
