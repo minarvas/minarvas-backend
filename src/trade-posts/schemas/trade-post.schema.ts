@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
-import { TradeAction } from '../enums/trade-action.enum';
-import { TradeStatus } from '../enums/trade-status.enum';
 import * as paginate from 'mongoose-paginate-v2';
 import { User } from '../../users/schemas/user.schema';
+import { TradeAction } from '../enums/trade-action.enum';
+import { TradeStatus } from '../enums/trade-status.enum';
 import { TradePostComment } from './trade-post-comment.schema';
 
 export type TradePostDocument = HydratedDocument<TradePost>;
@@ -30,6 +30,9 @@ export class TradePost {
 
   @Prop({ required: false, type: [{ type: mongoose.Schema.Types.ObjectId, ref: TradePostComment.name }] })
   comments?: TradePostComment[];
+
+  @Prop({ required: false })
+  image?: string;
 
   @Prop({ required: true, index: true, default: Date.now })
   createdAt: Date;

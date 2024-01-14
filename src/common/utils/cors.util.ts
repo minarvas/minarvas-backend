@@ -6,6 +6,7 @@
 const corsWhitelist = [
   process.env.CLIENT,
   process.env.HOST,
+  'electron://altair',
   'http://54.180.116.236',
   'http://localhost',
   'https://mapleland.vercel.app',

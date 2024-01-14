@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
+import { endOfHour, startOfHour } from 'date-fns';
 import { Model, Types } from 'mongoose';
+import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
 import { CreateTradePostInput, PaginateTradePostInput, UpdateTradePostInput } from './inputs/trade-post.input';
 import { TradePostResponse } from './responses/trade-post.response';
-import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
+import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
 import { TradePostPaginationService } from './services/trade-post-pagination.service';
-import { endOfHour, startOfHour } from 'date-fns';
+import { TradePostStorageService } from './services/trade-post-storage.service';
 
 @Injectable()
 export class TradePostService {
@@ -15,9 +16,10 @@ export class TradePostService {
   constructor(
     @InjectModel(TradePost.name) private readonly tradePostModel: Model<TradePostDocument>,
     private readonly tradePostPaginationService: TradePostPaginationService,
+    private readonly tradePostStorageService: TradePostStorageService,
   ) {}
 
-  async createTradePost(userId: Types.ObjectId, input: CreateTradePostInput) {
+  async createTradePost(userId: Types.ObjectId, input: CreateTradePostInput, image?: any) {
     const start = startOfHour(new Date());
     const end = endOfHour(new Date());
     const count = await this.tradePostModel.countDocuments({ authorId: userId, createdAt: { $gte: start, $lte: end } });
@@ -26,7 +28,9 @@ export class TradePostService {
       throw new TradePostCreationMaxExceeded();
     }
 
-    const tradePost = await this.tradePostModel.create({ ...input, authorId: userId });
+    const { _id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
+    const imageUrl = await this.tradePostStorageService.upload(tradePostId.toHexString(), image);
+    const tradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, { image: imageUrl }, { new: true });
     return new TradePostResponse(tradePost);
   }
 

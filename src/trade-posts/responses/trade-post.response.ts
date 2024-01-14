@@ -33,6 +33,9 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
   @Field({ description: 'The number of comments in the trade post' })
   commentsCount: number;
 
+  @Field({ nullable: true, description: 'The image url of the trade post' })
+  image: string;
+
   comments: TradePostComment[];
 
   constructor(partial: Partial<TradePostResponse>) {
@@ -45,6 +48,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
       description: partial?.description,
       status: partial?.status,
       commentsCount: partial?.comments.length || 0,
+      image: partial?.image,
     });
   }
 }
