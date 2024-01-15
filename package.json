@@ -34,7 +34,6 @@
     "@nestjs/mongoose": "^10.0.2",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "10.0.3",
-    "@nestjs/typeorm": "^10.0.0",
     "apollo-server-express": "^3.13.0",
     "aws-sdk": "^2.1536.0",
     "axios": "^1.6.3",
@@ -61,9 +60,7 @@
     "reflect-metadata": "0.1.13",
     "rimraf": "5.0.1",
     "rxjs": "7.8.1",
-    "ts-morph": "^19.0.0",
-    "typeorm": "^0.3.17",
-    "typeorm-naming-strategies": "^4.1.0"
+    "ts-morph": "^19.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "10.0.5",
