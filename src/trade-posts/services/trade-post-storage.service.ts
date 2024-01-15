@@ -10,17 +10,14 @@ export class TradePostStorageService {
 
   constructor(@InjectAwsService(S3) private readonly s3: S3) {}
 
-  async listBucketContents() {
-    const response = await this.s3.listObjectsV2({ Bucket: this.bucketName }).promise();
-    return response.Contents.map((c) => c.Key);
-  }
+  private getKey = (postId: string) => `${this.bucketDirectory}/${postId}`;
 
-  async upload(postId: string, image: FileUpload) {
+  async uploadImage(postId: string, image: FileUpload) {
     if (!image || !postId) return null;
 
     try {
       this.logger.log('Uploading image to S3 bucket...');
-      const key = `${this.bucketDirectory}/${postId}`;
+      const key = this.getKey(postId);
       const response = await this.s3
         .upload({
           Bucket: this.bucketName,
@@ -33,6 +30,15 @@ export class TradePostStorageService {
     } catch (err) {
       this.logger.error('Fail to upload image', err);
       return null;
+    }
+  }
+
+  async deleteImage(postId: string) {
+    try {
+      const key = this.getKey(postId);
+      await this.s3.deleteObject({ Bucket: this.bucketName, Key: key }).promise();
+    } catch (err) {
+      this.logger.warn('Fail to delete trade post image. Or image does not exist in s3 storage', err);
     }
   }
 }

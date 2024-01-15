@@ -1,18 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model, PaginateModel, Types } from 'mongoose';
+import { TradePostNotFound } from '../exceptions/trade-post.exception';
 import {
   CreateTradePostCommentInput,
   GetTradePostCommentListInput,
   UpdateTradePostCommentInput,
 } from '../inputs/trade-post-comment.input';
-import { InjectModel } from '@nestjs/mongoose';
-import { TradePostComment } from '../schemas/trade-post-comment.schema';
 import { TradePostCommentList, TradePostCommentResponse } from '../responses/trade-post-comment.response';
+import { TradePostComment } from '../schemas/trade-post-comment.schema';
 import { TradePost, TradePostDocument } from '../schemas/trade-post.schema';
-import { TradePostNotFound } from '../exceptions/trade-post.exception';
 
 @Injectable()
 export class TradePostCommentService {
+  private readonly logger = new Logger(TradePostCommentService.name);
+
   constructor(
     @InjectModel(TradePostComment.name) private readonly tradePostCommentModel: PaginateModel<TradePostComment>,
     @InjectModel(TradePost.name) private readonly tradePostModel: Model<TradePostDocument>,
@@ -43,6 +45,14 @@ export class TradePostCommentService {
     const tradePostComment = await this.getTradePostComment(tradePostCommentId);
     await this.tradePostCommentModel.findByIdAndDelete(tradePostCommentId);
     return tradePostComment;
+  }
+
+  async deleteTradePostComments(tradePostCommentIds: Types.ObjectId[] | TradePostComment[]) {
+    try {
+      await this.tradePostCommentModel.deleteMany({ _id: tradePostCommentIds });
+    } catch (err) {
+      this.logger.error('Fail to delete trade post comments', err);
+    }
   }
 
   async updateTradePostComment({ tradePostCommentId, ...rest }: UpdateTradePostCommentInput) {

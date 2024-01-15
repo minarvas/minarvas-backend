@@ -6,6 +6,7 @@ import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/tr
 import { CreateTradePostInput, PaginateTradePostInput, UpdateTradePostInput } from './inputs/trade-post.input';
 import { TradePostResponse } from './responses/trade-post.response';
 import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
+import { TradePostCommentService } from './services/trade-post-comment.service';
 import { TradePostPaginationService } from './services/trade-post-pagination.service';
 import { TradePostStorageService } from './services/trade-post-storage.service';
 
@@ -17,6 +18,7 @@ export class TradePostService {
     @InjectModel(TradePost.name) private readonly tradePostModel: Model<TradePostDocument>,
     private readonly tradePostPaginationService: TradePostPaginationService,
     private readonly tradePostStorageService: TradePostStorageService,
+    private readonly tradePostCommentService: TradePostCommentService,
   ) {}
 
   async createTradePost(userId: Types.ObjectId, input: CreateTradePostInput, image?: any) {
@@ -29,7 +31,7 @@ export class TradePostService {
     }
 
     const { _id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
-    const imageUrl = await this.tradePostStorageService.upload(tradePostId.toHexString(), image);
+    const imageUrl = await this.tradePostStorageService.uploadImage(tradePostId.toHexString(), image);
     const tradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, { image: imageUrl }, { new: true });
     return new TradePostResponse(tradePost);
   }
@@ -56,10 +58,12 @@ export class TradePostService {
 
   async deleteTradePost(tradePostId: string) {
     const tradePost = await this.tradePostModel.findById(tradePostId);
-
     if (!tradePost) {
       return null;
     }
+
+    this.tradePostCommentService.deleteTradePostComments(tradePost.comments);
+    this.tradePostStorageService.deleteImage(tradePostId);
     await this.tradePostModel.findByIdAndDelete(tradePostId);
     return new TradePostResponse(tradePost);
   }
