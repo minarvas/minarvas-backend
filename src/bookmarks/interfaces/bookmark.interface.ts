@@ -1,4 +1,6 @@
+import { Types } from 'mongoose';
+
 export interface IBookmark {
-  userId: string;
-  tradePostId: string;
+  userId: Types.ObjectId;
+  tradePostIds: Types.ObjectId[];
 }

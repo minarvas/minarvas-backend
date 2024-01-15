@@ -51,7 +51,6 @@
     "lodash": "^4.17.21",
     "mongoose": "^8.0.3",
     "mongoose-paginate-v2": "^1.8.0",
-    "mysql2": "^3.5.0",
     "nanoid": "3",
     "nest-aws-sdk": "^3.0.1",
     "passport": "^0.6.0",
