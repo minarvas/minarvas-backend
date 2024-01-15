@@ -23,13 +23,15 @@ export class CreateTradePostInput implements Omit<ITradePost, 'authorId' | 'stat
   @IsEnum(TradeAction)
   action: TradeAction;
 
-  @Field()
+  @Field({ description: 'The title of the trade post. Max length is 30.' })
   @IsString()
+  @Length(1, 30)
   title: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'The description of the trade post. Max length is 200.' })
   @IsString()
   @IsOptional()
+  @Length(1, 200)
   description?: string;
 
   @Field()
@@ -53,14 +55,16 @@ export class UpdateTradePostInput implements Partial<ITradePost> {
   @Length(24, 24)
   tradePostId: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'The title of the trade post. Max length is 30.' })
   @IsString()
   @IsOptional()
+  @Length(1, 30)
   title?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'The description of the trade post. Max length is 200.' })
   @IsString()
   @IsOptional()
+  @Length(1, 200)
   description?: string;
 
   @Field({ nullable: true })

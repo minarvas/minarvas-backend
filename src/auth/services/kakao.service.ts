@@ -23,6 +23,13 @@ export class KakaoService {
 
   async getKakaoToken(dto: GetKakaoProfileDTO): Promise<KakaoTokenInfo> {
     try {
+      console.log({
+        grant_type: 'authorization_code',
+        client_id: dto.clientId,
+        redirect_uri: dto.redirectUri,
+        code: dto.code,
+        client_secret: dto.clientSecret,
+      });
       const observable = this.httpService.post(
         'https://kauth.kakao.com/oauth/token',
         {
@@ -35,6 +42,7 @@ export class KakaoService {
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+            Accept: 'application/json',
           },
         },
       );

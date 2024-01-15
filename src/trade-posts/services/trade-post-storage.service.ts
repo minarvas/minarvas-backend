@@ -35,6 +35,7 @@ export class TradePostStorageService {
 
   async deleteImage(postId: string) {
     try {
+      this.logger.log('Deleting trade post image from S3 bucket...');
       const key = this.getKey(postId);
       await this.s3.deleteObject({ Bucket: this.bucketName, Key: key }).promise();
     } catch (err) {
