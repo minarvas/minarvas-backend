@@ -13,7 +13,7 @@ export class BookmarkService {
   constructor(@InjectModel(Bookmark.name) private readonly bookmarkModel: Model<BookmarkDocument>) {}
   async createBookmark(userId: string, input: CreateBookmarkInput) {
     const existingBookmark = await this.bookmarkModel.findOne({ userId });
-    const count = existingBookmark.tradePosts?.length || 0;
+    const count = existingBookmark?.tradePosts?.length || 0;
     if (count >= this.bookmarkLimit) {
       throw new BookmarkLimitExceeded();
     }
@@ -24,6 +24,11 @@ export class BookmarkService {
       { upsert: true, new: true },
     );
 
+    return new BookmarkResponse(bookmark);
+  }
+
+  async getBookmark(userId: string) {
+    const bookmark = await this.bookmarkModel.findOne({ userId });
     return new BookmarkResponse(bookmark);
   }
 }

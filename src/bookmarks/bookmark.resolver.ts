@@ -1,4 +1,4 @@
-import { Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql';
+import { Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { UserAuth } from '../auth/decorators/auth.decorator';
 import { Input } from '../graphql/args/input.args';
 import { TradePostResponse } from '../trade-posts/responses/trade-post.response';
@@ -21,5 +21,10 @@ export class BookmarkResolver {
   @ResolveField(() => TradePostResponse)
   async tradePosts(@Parent() bookmark: BookmarkResponse) {
     return this.tradePostService.getTradePostsByIds(bookmark.tradePostIds);
+  }
+
+  @Query(() => BookmarkResponse)
+  async getBookmark(@AuthorizedUser('_id') userId: string) {
+    return this.bookmarkService.getBookmark(userId);
   }
 }
