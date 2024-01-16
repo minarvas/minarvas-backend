@@ -17,7 +17,7 @@ docker build -t minarvas:$version .
 
 
 # 4. Docker Hub 에 이미지 푸시
-echo "Tagging image with Docker Hub username"
+echo "Tagging image with Docker Hub"
 docker tag minarvas:$version ilkhso/minarvas-owl:$version
 echo "Pushing image to Docker Hub"
 docker push ilkhso/minarvas-owl:$version

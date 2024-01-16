@@ -78,12 +78,6 @@ export class TradePostResolver {
     return this.tradePostService.bookmarkTradePost(userId, input);
   }
 
-  @Query(() => [TradePostResponse])
-  @UserAuth()
-  async getBookmarkedTradePost(@AuthorizedUser('_id') userId: string) {
-    return this.tradePostService.getBookmarkedTradePosts(userId);
-  }
-
   @Mutation(() => TradePostResponse)
   @UserAuth()
   async unbookmarkTradePost(@AuthorizedUser('_id') userId: string, @Input() input: BookmarkTradePostInput) {
