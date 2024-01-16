@@ -162,3 +162,10 @@ export class PaginateTradePostInput extends PaginateInput {
   @Type(() => PaginateTradePostOption)
   options: PaginateTradePostOption;
 }
+
+@InputType()
+export class BookmarkTradePostInput {
+  @Field({ description: 'The trade post id that the user want to bookmark' })
+  @IsString()
+  tradePostId: string;
+}

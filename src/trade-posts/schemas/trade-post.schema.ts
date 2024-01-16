@@ -10,6 +10,8 @@ export type TradePostDocument = HydratedDocument<TradePost>;
 
 @Schema({ collection: 'trade_posts', timestamps: true })
 export class TradePost {
+  _id: Types.ObjectId;
+
   @Prop({ required: true, enum: TradeAction, index: true })
   action: TradeAction;
 
@@ -30,6 +32,9 @@ export class TradePost {
 
   @Prop({ required: false, type: [{ type: Types.ObjectId, ref: TradePostComment.name }] })
   comments?: TradePostComment[];
+
+  @Prop({ default: [], required: true, type: [{ type: Types.ObjectId, ref: User.name }], index: true })
+  bookmarkedBy?: Types.ObjectId[];
 
   @Prop({ required: false })
   image?: string;

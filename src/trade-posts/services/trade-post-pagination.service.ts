@@ -10,39 +10,47 @@ import { TradePost } from '../schemas/trade-post.schema';
 export class TradePostPaginationService {
   constructor(@InjectModel(TradePost.name) private readonly tradePostModel: PaginateModel<TradePost>) {}
 
-  async paginate(query: PaginateTradePostQuery = {}, options: PaginateOption) {
-    const filter = this.getFilterQuery(query);
-    const tradePostList = await this.tradePostModel.paginate(filter, options);
-    return new TradePostList({ ...tradePostList, docs: this.mapDocsToResponse(tradePostList.docs) });
+  async paginate(query: PaginateTradePostQuery = {}, options: PaginateOption, bookmarkedTradePostIds: string[]) {
+    const filter = this.getFilter(query);
+    const tradePostList = await this.tradePostModel.paginate(filter, { ...options });
+    return new TradePostList({
+      ...tradePostList,
+      docs: this.mapDocsToResponse(tradePostList.docs, bookmarkedTradePostIds),
+    });
   }
 
-  private getFilterQuery({ title, minPrice, maxPrice, start, end, ...rest }: PaginateTradePostQuery) {
-    const query: FilterQuery<TradePost> = rest || {};
+  private getFilter({ title, minPrice, maxPrice, start, end, ...rest }: PaginateTradePostQuery) {
+    const filter: FilterQuery<TradePost> = rest || {};
 
     if (title) {
-      query.title = { $regex: title, $options: 'i' };
+      filter.title = { $regex: title, $options: 'i' };
     }
 
     if (minPrice) {
-      query.price = { $gte: minPrice };
+      filter.price = { $gte: minPrice };
     }
 
     if (maxPrice) {
-      query.price = { $lte: maxPrice };
+      filter.price = { $lte: maxPrice };
     }
 
     if (start) {
-      query.createdAt = { $gte: new Date(start) };
+      filter.createdAt = { $gte: new Date(start) };
     }
 
     if (end) {
-      query.createdAt = { $lte: new Date(end) };
+      filter.createdAt = { $lte: new Date(end) };
     }
 
-    return query;
+    return filter;
   }
 
-  private mapDocsToResponse(docs: TradePost[]) {
-    return docs.map((doc) => new TradePostResponse(doc));
+  private mapDocsToResponse(docs: TradePost[], bookmarkedTradePostIds: string[]) {
+    return docs
+      .map((doc: TradePost) => new TradePostResponse(doc))
+      .map((tradePost) => {
+        tradePost.isBookmarked = bookmarkedTradePostIds.some((bookmarkedId) => bookmarkedId === String(tradePost._id));
+        return tradePost;
+      });
   }
 }

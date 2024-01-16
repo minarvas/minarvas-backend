@@ -30,11 +30,14 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
   @Field(() => TradeStatus)
   status: TradeStatus;
 
-  @Field({ description: 'The number of comments in the trade post' })
+  @Field({ defaultValue: 0, description: 'The number of comments in the trade post' })
   commentsCount: number;
 
   @Field({ nullable: true, description: 'The image url of the trade post' })
   image: string;
+
+  @Field({ defaultValue: false, description: 'If the trade post is bookmarked by the user' })
+  isBookmarked?: boolean;
 
   comments: TradePostComment[];
 
@@ -49,6 +52,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
       status: partial?.status,
       commentsCount: partial?.comments.length || 0,
       image: partial?.image,
+      isBookmarked: partial?.isBookmarked || false,
     });
   }
 }

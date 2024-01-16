@@ -1,13 +1,14 @@
-import { CanActivate, Injectable, Logger } from '@nestjs/common';
+import { CanActivate, Inject, Injectable, Logger } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { TradePostService } from '../trade-post.service';
 import { UnauthenticatedException } from '../../auth/exceptions/auth.exception';
+import { ITradePostService } from '../interfaces/trade-post.interface';
+import { TradePostService } from '../trade-post.service';
 
 @Injectable()
 export class TradePostGuard implements CanActivate {
   private readonly logger = new Logger(TradePostGuard.name);
 
-  constructor(private readonly tradePostService: TradePostService) {}
+  constructor(@Inject(ITradePostService) private readonly tradePostService: TradePostService) {}
 
   async canActivate(context: GqlExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
@@ -23,7 +24,7 @@ export class TradePostGuard implements CanActivate {
       throw new UnauthenticatedException();
     }
 
-    const tradePost = await this.tradePostService.getTradePost(tradePostId);
+    const tradePost = await this.tradePostService.getTradePostById(tradePostId);
 
     if (!tradePost) {
       this.logger.error('Trade post does not exist');

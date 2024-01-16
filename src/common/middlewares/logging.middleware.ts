@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 export class LoggingMiddleware implements NestMiddleware {
   private readonly requestLogger = new Logger('REQUEST');
 
-  use(req: Request, res: Response, next: Function) {
+  use(req: Request, _res: Response, next: Function) {
     const { method, detail } = this.parseQuery(req.body?.query || '');
     const operationName = req.body?.operationName;
     const variables = req.body?.variables;

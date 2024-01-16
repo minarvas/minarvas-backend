@@ -1,9 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { endOfHour, startOfHour } from 'date-fns';
+import { isEmpty } from 'lodash';
 import { Model, Types } from 'mongoose';
+import { IBookmarkService } from 'src/bookmarks/interfaces/bookmark.interface';
 import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
-import { CreateTradePostInput, PaginateTradePostInput, UpdateTradePostInput } from './inputs/trade-post.input';
+import {
+  BookmarkTradePostInput,
+  CreateTradePostInput,
+  PaginateTradePostInput,
+  UpdateTradePostInput,
+} from './inputs/trade-post.input';
+import { ITradePostService } from './interfaces/trade-post.interface';
 import { TradePostResponse } from './responses/trade-post.response';
 import { TradePost, TradePostDocument } from './schemas/trade-post.schema';
 import { TradePostCommentService } from './services/trade-post-comment.service';
@@ -11,11 +19,12 @@ import { TradePostPaginationService } from './services/trade-post-pagination.ser
 import { TradePostStorageService } from './services/trade-post-storage.service';
 
 @Injectable()
-export class TradePostService {
+export class TradePostService implements ITradePostService {
   private readonly CREATION_MAX_IN_HOUR = 5;
 
   constructor(
     @InjectModel(TradePost.name) private readonly tradePostModel: Model<TradePostDocument>,
+    @Inject(IBookmarkService) private readonly bookmarkService: IBookmarkService,
     private readonly tradePostPaginationService: TradePostPaginationService,
     private readonly tradePostStorageService: TradePostStorageService,
     private readonly tradePostCommentService: TradePostCommentService,
@@ -36,40 +45,87 @@ export class TradePostService {
     return new TradePostResponse(tradePost);
   }
 
-  async getTradePost(tradePostId: string) {
+  async getTradePostById(tradePostId: string) {
+    return this.tradePostModel.findById(tradePostId);
+  }
+
+  async getTradePost(userId: string, tradePostId: string) {
     const tradePost = await this.tradePostModel.findById(tradePostId);
 
     if (!tradePost) {
       throw new TradePostNotFound(tradePostId);
     }
 
-    return new TradePostResponse(tradePost);
+    const result = new TradePostResponse(tradePost);
+
+    if (userId) {
+      const bookmark = await this.bookmarkService.getBookmark(userId);
+      console.log(bookmark);
+      console.log(tradePostId);
+      result.isBookmarked = bookmark?.tradePostIds?.some((id) => id === tradePostId) || false;
+    }
+
+    return result;
   }
 
-  async getTradePostList(input: PaginateTradePostInput) {
-    return this.tradePostPaginationService.paginate(input.query, input.options);
+  async getTradePostList(userId: string, input: PaginateTradePostInput) {
+    const { tradePostIds } = await this.bookmarkService.getBookmark(userId);
+    return this.tradePostPaginationService.paginate(input.query, input.options, tradePostIds);
   }
 
-  async getTradePostsByIds(tradePostIds: Types.ObjectId[]) {
+  async getTradePostsByIds(tradePostIds: string[]) {
     const tradePosts = await this.tradePostModel.find({ _id: { $in: tradePostIds } });
     return tradePosts.map((tradePost) => new TradePostResponse(tradePost));
   }
 
-  async updateTradePost(input: UpdateTradePostInput) {
-    const { tradePostId, ...update } = input;
-    const newTradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, update, { new: true });
-    return new TradePostResponse(newTradePost);
+  async getBookmarkedTradePosts(userId: string) {
+    const bookmark = await this.bookmarkService.getBookmark(userId);
+
+    if (isEmpty(bookmark?.tradePostIds)) {
+      return null;
+    }
+
+    const tradePosts = await this.getTradePostsByIds(bookmark.tradePostIds);
+
+    if (isEmpty(tradePosts)) {
+      return null;
+    }
+
+    return tradePosts;
   }
 
-  async deleteTradePost(tradePostId: string) {
-    const tradePost = await this.tradePostModel.findById(tradePostId);
+  async updateTradePost(userId: string, input: UpdateTradePostInput) {
+    const { tradePostId, ...dto } = input;
+    await this.tradePostModel.updateOne({ _id: tradePostId }, dto, { new: true });
+    return this.getTradePost(userId, tradePostId);
+  }
+
+  async deleteTradePost(userId: string, tradePostId: string) {
+    const tradePost = await this.getTradePost(userId, tradePostId);
     if (!tradePost) {
       return null;
     }
 
+    await this.bookmarkService.deleteBookmarks(tradePostId);
     this.tradePostCommentService.deleteTradePostComments(tradePost.comments);
     this.tradePostStorageService.deleteImage(tradePostId);
     await this.tradePostModel.findByIdAndDelete(tradePostId);
-    return new TradePostResponse(tradePost);
+    return tradePost;
+  }
+
+  async bookmarkTradePost(userId: string, { tradePostId }: BookmarkTradePostInput) {
+    await this.bookmarkService.createBookmark(userId, tradePostId);
+    await this.tradePostModel.findOneAndUpdate(
+      { _id: tradePostId },
+      { $addToSet: { bookmarkedBy: userId } },
+      { upsert: true },
+    );
+    return this.getTradePost(userId, tradePostId);
+  }
+
+  async unbookmarkTradePost(userId: string, input: BookmarkTradePostInput) {
+    await this.bookmarkService.deleteBookmark(userId, input.tradePostId);
+    await this.tradePostModel.findOneAndUpdate({ _id: input.tradePostId }, { $pull: { bookmarkedBy: userId } });
+    return this.getTradePost(userId, input.tradePostId);
   }
 }

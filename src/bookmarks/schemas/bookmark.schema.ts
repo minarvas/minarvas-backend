@@ -9,7 +9,7 @@ export class Bookmark {
   @Prop({ required: true, unique: true, index: true })
   userId: Types.ObjectId;
 
-  @Prop({ required: false, type: [{ type: Types.ObjectId, ref: TradePost.name }] })
+  @Prop({ default: [], required: true, type: [{ type: Types.ObjectId, ref: TradePost.name }] })
   tradePosts?: TradePost[];
 
   @Prop({ required: true, index: true, default: Date.now })
