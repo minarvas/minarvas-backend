@@ -29,5 +29,6 @@ import { TradePostService } from './trade-post.service';
     TradePostCommentResolver,
     TradePostStorageService,
   ],
+  exports: [TradePostService],
 })
 export class TradePostModule {}

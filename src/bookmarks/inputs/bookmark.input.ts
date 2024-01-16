@@ -1,8 +1,9 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Types } from 'mongoose';
+import { IsString } from 'class-validator';
 
 @InputType()
 export class CreateBookmarkInput {
-  @Field(() => Types.ObjectId, { description: 'The trade post id that the user want to bookmark' })
-  tradePostId: Types.ObjectId;
+  @Field({ description: 'The trade post id that the user want to bookmark' })
+  @IsString()
+  tradePostId: string;
 }

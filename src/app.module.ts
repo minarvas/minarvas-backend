@@ -11,6 +11,7 @@ import { AwsSdkModule } from 'nest-aws-sdk';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { BookmarkModule } from './bookmarks/bookmark.module';
 import { CONFIG_OPTION } from './common/config/config-option.schema';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
 import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
@@ -59,6 +60,7 @@ import { TradePostModule } from './trade-posts/trade-post.module';
     }),
     AuthModule,
     TradePostModule,
+    BookmarkModule,
   ],
   controllers: [AppController],
   providers: [AppService],

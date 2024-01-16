@@ -50,6 +50,11 @@ export class TradePostService {
     return this.tradePostPaginationService.paginate(input.query, input.options);
   }
 
+  async getTradePostsByIds(tradePostIds: Types.ObjectId[]) {
+    const tradePosts = await this.tradePostModel.find({ _id: { $in: tradePostIds } });
+    return tradePosts.map((tradePost) => new TradePostResponse(tradePost));
+  }
+
   async updateTradePost(input: UpdateTradePostInput) {
     const { tradePostId, ...update } = input;
     const newTradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, update, { new: true });
