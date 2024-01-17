@@ -39,7 +39,7 @@ jobs:
         run: |
           # Decode secrets.ENV and save it to .env.development
           mkdir environments && touch environments/.env.development
-          echo "${{ secrets.ENV }}" | base64 --decode > environments/.env.development
+          echo "${{ secrets.ENV }}" > environments/.env.development
           cat environments/.env.development
 
       - name: Build application
