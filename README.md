@@ -29,7 +29,8 @@
 ## Installation
 
 ```bash
-$ npm install
+$ yarn set version berry
+$ yarn install
 ```
 
 ## Running the app
