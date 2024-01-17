@@ -27,3 +27,11 @@ jobs:
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      ENV: ${{ secrets.DEV_ENV }}
+
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      HOST: ${{ secrets.HOST }}

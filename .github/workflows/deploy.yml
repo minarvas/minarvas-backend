@@ -1,12 +1,10 @@
-run-name: Build
+run-name: Deploy
 on:
   workflow_call:
     secrets:
-      DOCKER_USERNAME:
+      PRIVATE_KEY:
         required: true
-      DOCKER_PASSWORD:
-        required: true
-      ENV:
+      HOST:
         required: true
 
 jobs:
@@ -35,11 +33,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Create .env file
+      - name: Deploy
         run: |
-          # Decode secrets.ENV and save it to .env.development
-          echo "${{ secrets.ENV }}" | base64 --decode > environments/.env.development
-          cat environments/.env.development
-
-      - name: Build application
-        run: yarn build:docker
+          VERSION=$(grep -o '"version": "[^"]*' package.json | cut -d '"' -f 4)
+          echo "VERSION: $VERSION"
+          echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -o StrictHostKeyChecking=no -i private_key.pem "${{ secrets.HOST }}" "minarvas run $VERSION"
