@@ -3,7 +3,7 @@ name: Development Pipeline
 on:
   push:
     branches:
-      - development
+      - develop
 
 concurrency:
   group: ${{ github.event.repository.name }}-${{ github.ref }}
