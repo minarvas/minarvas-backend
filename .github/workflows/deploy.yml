@@ -6,6 +6,10 @@ on:
         required: true
       HOST:
         required: true
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
 
 jobs:
   Run:
@@ -33,4 +37,7 @@ jobs:
           echo "VERSION: $VERSION"
           echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-          ssh -o StrictHostKeyChecking=no -i private_key.pem "${{ secrets.HOST }}" "minarvas run $VERSION"
+          ssh -o StrictHostKeyChecking=no -i private_key.pem "${{ secrets.HOST }}" << EOF
+          docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+          minarvas run "$VERSION"
+          EOF
