@@ -10,10 +10,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
-
-    setup:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -37,18 +36,17 @@ jobs:
           yarn config set cacheFolder ./.yarn/cache
           yarn install --frozen-lockfile
 
-    lint:
-      needs: setup
-      runs-on: ubuntu-latest
-
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Lint code
         run: yarn run lint
 
-    test:
-      needs: setup
-      runs-on: ubuntu-latest
-
-
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Install Test Dependencies
         run: yarn add --dev jest-junit
 
@@ -61,10 +59,10 @@ jobs:
           name: test-results
           path: junit.xml
 
-    build:
-      needs: [lint, test]
-      runs-on: ubuntu-latest
-
+  build:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
       - name: Docker login
         uses: docker/login-action@v1
         with:
