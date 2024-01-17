@@ -12,7 +12,7 @@ export class BookmarkResponse implements IBookmark {
   constructor(partial: Partial<BookmarkResponse>) {
     Object.assign(this, {
       userId: partial?.userId,
-      tradePostIds: partial?.tradePosts,
+      tradePostIds: partial?.tradePostIds,
     });
   }
 }
