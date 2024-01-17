@@ -34,7 +34,7 @@ export class BookmarkService implements IBookmarkService {
     const bookmark = await this.bookmarkModel.findOne({ userId });
 
     if (!bookmark) {
-      return new BookmarkResponse({ userId: new Types.ObjectId(userId), tradePostIds: [] });
+      return new BookmarkResponse({ userId: new Types.ObjectId(userId), tradePosts: [] });
     }
 
     return new BookmarkResponse(bookmark);
