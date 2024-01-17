@@ -8,7 +8,7 @@ WORKDIR /app
 # Copy package.json and yarn.lock to the container
 COPY package.json yarn.lock ./
 
-RUN yarn install
+RUN yarn install --ignore-engines
 
 COPY . .
 
