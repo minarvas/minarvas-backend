@@ -29,8 +29,8 @@ module.exports = {
       files: ['**/*.spec.ts', 'integration/**/*.ts'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        project: 'tsconfig.spec.json',
-        sourceType: 'module',
+        project: ['tsconfig.json'],
+        createDefaultProgram: true,
       },
       rules: {
         '@typescript-eslint/interface-name-prefix': 'off',
@@ -41,6 +41,6 @@ module.exports = {
         '@typescript-eslint/ban-types': 'off',
         '@typescript-eslint/no-empty-function': 'off',
       },
-    }
+    },
   ]
 };

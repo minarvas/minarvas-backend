@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { TradePost } from 'src/trade-posts/schemas/trade-post.schema';
+import { TradePost } from '../../trade-posts/schemas/trade-post.schema';
 
 export type BookmarkDocument = HydratedDocument<Bookmark>;
 

@@ -50,7 +50,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
       title: partial?.title,
       description: partial?.description,
       status: partial?.status,
-      commentsCount: partial?.comments.length || 0,
+      commentsCount: partial?.comments?.length || 0,
       image: partial?.image,
       isBookmarked: partial?.isBookmarked || false,
     });

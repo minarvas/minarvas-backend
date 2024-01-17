@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { endOfHour, startOfHour } from 'date-fns';
 import { isEmpty } from 'lodash';
 import { Model, Types } from 'mongoose';
-import { IBookmarkService } from 'src/bookmarks/interfaces/bookmark.interface';
+import { IBookmarkService } from '../bookmarks/interfaces/bookmark.interface';
 import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
 import {
   BookmarkTradePostInput,
