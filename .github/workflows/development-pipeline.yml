@@ -11,56 +11,18 @@ concurrency:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    uses: ./.github/workflows/setup.yml
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Cache Yarn packages
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          yarn config set cacheFolder ./.yarn/cache
-          yarn install --frozen-lockfile
-
-  lint:
+  lint_test:
     needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Lint code
-        run: yarn run lint
+    uses: ./.github/workflows/lint-check.yml
 
-  test:
+  unit_test:
     needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Test Dependencies
-        run: yarn add --dev jest-junit
-
-      - name: Run unit tests
-        run: yarn test --ci --reporters=default --reporters=jest-junit
-
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: junit.xml
+    uses: ./.github/workflows/unit-test.yml
 
   build:
-    needs: [lint, test]
+    needs: [lint_test, unit_test]
     runs-on: ubuntu-latest
     steps:
       - name: Docker login

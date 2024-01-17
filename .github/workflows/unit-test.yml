@@ -1,0 +1,35 @@
+run-name: Unit Tests
+on:
+  workflow_call:
+
+jobs:
+  Run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Use Cached Yarn packages
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Test Dependencies
+        run: yarn add --dev jest-junit
+
+      - name: Run unit tests
+        run: yarn test --ci --reporters=default --reporters=jest-junit
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: junit.xml
