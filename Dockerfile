@@ -5,12 +5,9 @@ ENV LANG=C.UTF-8
 
 WORKDIR /app
 
-# Copy package.json and yarn.lock to the container
-COPY package.json yarn.lock ./
-
-RUN yarn install --ignore-engines
-
 COPY . .
+
+RUN yarn install 
 
 RUN yarn build
 
