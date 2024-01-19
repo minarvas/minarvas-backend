@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 1. package.json 에서 버전 추출
-version=$(jq -r '.version' package.json)
+version="latest"
 
 echo "Image version:$version"
 
@@ -13,7 +13,7 @@ if [ ! -z "$existing_image" ]; then
 fi
 
 # 3. 이미지 빌드
-docker buildx -t minarvas:$version .
+docker buildx --platform linux/arm64/v8 -t minarvas:$version .
 
 # 4. Docker Hub 에 이미지 푸시
 echo "Tagging image with Docker Hub"
