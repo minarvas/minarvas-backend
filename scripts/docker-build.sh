@@ -13,7 +13,7 @@ if [ ! -z "$existing_image" ]; then
 fi
 
 # 3. 이미지 빌드
-docker buildx --platform linux/arm64/v8 -t minarvas:$version .
+docker build --platform linux/arm64/v8 -t minarvas:$version .
 
 # 4. Docker Hub 에 이미지 푸시
 echo "Tagging image with Docker Hub"
