@@ -36,7 +36,7 @@ export class JwtTokenGenerator {
     return { userId, accessToken, refreshToken };
   }
 
-  refresh(refreshToken: string) {
+  refresh(refreshToken: string): JwtToken {
     try {
       const payload: JwtPayload = this.jwtService.verify<JwtPayload>(refreshToken, { secret: this.refreshTokenSecret });
       return this.sign(payload.userId);
