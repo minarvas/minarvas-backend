@@ -34,6 +34,7 @@ async function bootstrap() {
       'Accept',
       'Observe',
       'Authorization',
+      'apollo-require-preflight',
     ],
     credentials: true,
     exposedHeaders: ['accesstoken', 'refreshtoken', 'Content-Disposition'],
