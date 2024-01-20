@@ -40,10 +40,15 @@ export class TradePostService implements ITradePostService {
       throw new TradePostCreationMaxExceeded();
     }
 
-    const { id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
-    const imageUrl = await this.tradePostStorageService.uploadImage(tradePostId, image);
-    const tradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, { image: imageUrl }, { new: true });
-    return new TradePostResponse(tradePost);
+    const session = await this.tradePostModel.startSession();
+    const result = await session.withTransaction<TradePostResponse>(async () => {
+      const { id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
+      const imageUrl = await this.tradePostStorageService.uploadImage(tradePostId, image);
+      const tradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, { image: imageUrl }, { new: true });
+      return new TradePostResponse(tradePost);
+    });
+    session.endSession();
+    return result;
   }
 
   async getTradePostById(tradePostId: string) {
@@ -70,6 +75,7 @@ export class TradePostService implements ITradePostService {
   async getTradePostList(userId: string, input: PaginateTradePostInput) {
     const { tradePostIds } = await this.bookmarkService.getBookmark(userId);
     const paginatedResult = await this.tradePostPaginationService.paginate(input.query, input.options, tradePostIds);
+
     return paginatedResult;
   }
 
@@ -102,30 +108,52 @@ export class TradePostService implements ITradePostService {
 
   async deleteTradePost(userId: string, tradePostId: string) {
     const tradePost = await this.getTradePost(userId, tradePostId);
-    if (!tradePost) {
-      return null;
-    }
 
-    await this.bookmarkService.deleteBookmarks(tradePostId);
-    this.tradePostCommentService.deleteTradePostComments(tradePost.comments);
-    this.tradePostStorageService.deleteImage(tradePostId);
-    await this.tradePostModel.findByIdAndDelete(tradePostId);
+    const session = await this.tradePostModel.startSession();
+    await session.withTransaction(async () => {
+      await this.bookmarkService.deleteBookmarks(tradePostId);
+      this.tradePostCommentService.deleteTradePostComments(tradePost.comments);
+      this.tradePostStorageService.deleteImage(tradePostId);
+      await this.tradePostModel.findByIdAndDelete(tradePostId);
+    });
+    session.endSession();
+
     return tradePost;
   }
 
   async bookmarkTradePost(userId: string, { tradePostId }: BookmarkTradePostInput) {
-    await this.bookmarkService.createBookmark(userId, tradePostId);
-    await this.tradePostModel.findOneAndUpdate(
-      { _id: tradePostId },
-      { $addToSet: { bookmarkedBy: userId } },
-      { upsert: true },
-    );
-    return this.getTradePost(userId, tradePostId);
+    const session = await this.tradePostModel.startSession();
+    const result = await session.withTransaction(async () => {
+      await this.checkTradePostId(tradePostId);
+      await this.bookmarkService.createBookmark(userId, tradePostId);
+      await this.tradePostModel.findOneAndUpdate(
+        { _id: tradePostId },
+        { $addToSet: { bookmarkedBy: userId } },
+        { upsert: true },
+      );
+      return this.getTradePost(userId, tradePostId);
+    });
+    session.endSession();
+    return result;
   }
 
   async unbookmarkTradePost(userId: string, input: BookmarkTradePostInput) {
-    await this.bookmarkService.deleteBookmark(userId, input.tradePostId);
-    await this.tradePostModel.findOneAndUpdate({ _id: input.tradePostId }, { $pull: { bookmarkedBy: userId } });
-    return this.getTradePost(userId, input.tradePostId);
+    const session = await this.tradePostModel.startSession();
+    const result = await session.withTransaction(async () => {
+      await this.checkTradePostId(input.tradePostId);
+      await this.bookmarkService.deleteBookmark(userId, input.tradePostId);
+      await this.tradePostModel.findOneAndUpdate({ _id: input.tradePostId }, { $pull: { bookmarkedBy: userId } });
+      return this.getTradePost(userId, input.tradePostId);
+    });
+    session.endSession();
+    return result;
+  }
+
+  async checkTradePostId(tradePostId: string) {
+    const isExist = await this.tradePostModel.exists({ _id: tradePostId });
+    if (!isExist) {
+      throw new TradePostNotFound(tradePostId);
+    }
+    return true;
   }
 }
