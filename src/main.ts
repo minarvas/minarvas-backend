@@ -39,7 +39,7 @@ async function bootstrap() {
     credentials: true,
     exposedHeaders: ['accesstoken', 'refreshtoken', 'Content-Disposition'],
   });
-  app.use('/graphql', graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }));
+  app.use('/graphql', graphqlUploadExpress({ maxFileSize: 3000000, maxFiles: 10 }));
 
   await app.use(helmet({ contentSecurityPolicy: isProductEnv() })).listen(process.env.PORT);
   console.log(`Application is running on: ${await app.getUrl()}`);
