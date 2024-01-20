@@ -1,19 +1,18 @@
 import { Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { TradePostCommentList, TradePostCommentResponse } from '../responses/trade-post-comment.response';
-import { TradePostCommentService } from '../services/trade-post-comment.service';
 import { UserAuth } from '../../auth/decorators/auth.decorator';
-import { AuthorizedUser } from '../../users/decorators/user.decorator';
-import { Types } from 'mongoose';
 import { Input } from '../../graphql/args/input.args';
+import { AuthorizedUser } from '../../users/decorators/user.decorator';
+import { UserResponse } from '../../users/responses/user.response';
+import { UserService } from '../../users/user.service';
+import { TradePostCommentAuth } from '../decorators/trade-post-comment-auth.decorator';
 import {
   CreateTradePostCommentInput,
   DeleteTradePostCommentInput,
   GetTradePostCommentListInput,
   UpdateTradePostCommentInput,
 } from '../inputs/trade-post-comment.input';
-import { UserResponse } from '../../users/responses/user.response';
-import { UserService } from '../../users/user.service';
-import { TradePostCommentAuth } from '../decorators/trade-post-comment-auth.decorator';
+import { TradePostCommentList, TradePostCommentResponse } from '../responses/trade-post-comment.response';
+import { TradePostCommentService } from '../services/trade-post-comment.service';
 
 @Resolver(() => TradePostCommentResponse)
 export class TradePostCommentResolver {
@@ -24,10 +23,7 @@ export class TradePostCommentResolver {
 
   @Mutation(() => TradePostCommentResponse)
   @UserAuth()
-  async createTradePostComment(
-    @AuthorizedUser('_id') authorId: Types.ObjectId,
-    @Input() input: CreateTradePostCommentInput,
-  ) {
+  async createTradePostComment(@AuthorizedUser('id') authorId: string, @Input() input: CreateTradePostCommentInput) {
     return this.tradePostCommentService.createTradePostComment(authorId, input);
   }
 

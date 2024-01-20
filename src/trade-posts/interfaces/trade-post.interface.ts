@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { TradeAction } from '../enums/trade-action.enum';
 import { TradeStatus } from '../enums/trade-status.enum';
 import { TradePostResponse } from '../responses/trade-post.response';
@@ -9,7 +8,7 @@ export interface ITradePost {
   title: string;
   description?: string;
   price: number;
-  authorId: string | Types.ObjectId;
+  authorId: string;
   status: TradeStatus;
   image?: string;
   comments?: TradePostComment[];

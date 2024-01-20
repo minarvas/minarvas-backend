@@ -1,9 +1,8 @@
-import { Types } from 'mongoose';
 import { TradePost } from '../../trade-posts/schemas/trade-post.schema';
 import { IBookmark } from '../interfaces/bookmark.interface';
 
 export class BookmarkResponse implements IBookmark {
-  userId: Types.ObjectId;
+  userId: string;
 
   tradePostIds: string[];
 

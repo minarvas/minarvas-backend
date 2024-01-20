@@ -40,7 +40,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
 
   comments: TradePostComment[];
 
-  constructor(partial: Partial<ITradePost>) {
+  constructor(partial: Partial<TradePostResponse>) {
     super(partial);
     Object.assign(this, {
       action: partial?.action,

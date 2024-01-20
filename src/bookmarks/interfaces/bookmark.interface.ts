@@ -1,8 +1,7 @@
-import { Types } from 'mongoose';
 import { BookmarkResponse } from '../responses/bookmark.response';
 
 export interface IBookmark {
-  userId: Types.ObjectId;
+  userId: string;
   tradePostIds: string[];
 }
 

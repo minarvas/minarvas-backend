@@ -1,15 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import { TradePost } from '../../trade-posts/schemas/trade-post.schema';
 
 export type BookmarkDocument = HydratedDocument<Bookmark>;
 
-@Schema({ collection: 'bookmarks', timestamps: true })
+@Schema({
+  collection: 'bookmarks',
+  timestamps: true,
+})
 export class Bookmark {
-  @Prop({ required: true, unique: true, index: true })
-  userId: Types.ObjectId;
+  id: string;
 
-  @Prop({ default: [], required: true, type: [{ type: Types.ObjectId, ref: TradePost.name }] })
+  @Prop({ required: true, unique: true, index: true })
+  userId: string;
+
+  @Prop({ default: [], required: true, type: [{ type: String, ref: TradePost.name }] })
   tradePosts?: TradePost[];
 
   @Prop({ required: true, index: true, default: Date.now })
@@ -17,5 +22,25 @@ export class Bookmark {
 }
 
 const BookmarkSchema = SchemaFactory.createForClass(Bookmark);
+
+BookmarkSchema.set('toJSON', {
+  getters: true,
+  virtuals: true,
+  transform: function (_, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+  },
+});
+
+BookmarkSchema.set('toObject', {
+  getters: true,
+  virtuals: true,
+  transform: function (_, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+  },
+});
 
 export { BookmarkSchema };

@@ -7,6 +7,8 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
+  id: string;
+
   @Prop({ required: true, unique: true })
   email: string;
 
@@ -29,4 +31,26 @@ export class User {
   accounts: IAccount[];
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.set('toJSON', {
+  getters: true,
+  virtuals: true,
+  transform: function (_, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+  },
+});
+
+UserSchema.set('toObject', {
+  getters: true,
+  virtuals: true,
+  transform: function (_, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+  },
+});
+
+export { UserSchema };

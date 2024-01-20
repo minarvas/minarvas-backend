@@ -14,7 +14,6 @@ import { AuthModule } from './auth/auth.module';
 import { BookmarkModule } from './bookmarks/bookmark.module';
 import { CONFIG_OPTION } from './common/config/config-option.schema';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
-import { ObjectIdScalar } from './graphql/scalars/object-id.scalar';
 import { TradePostModule } from './trade-posts/trade-post.module';
 
 @Module({
@@ -26,7 +25,6 @@ import { TradePostModule } from './trade-posts/trade-post.module';
       installSubscriptionHandlers: true,
       autoTransformHttpErrors: true,
       playground: false,
-      resolvers: { ObjectId: ObjectIdScalar },
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       context: ({ req, res }) => ({ req, res }),
       formatError: (error: GraphQLError) => {

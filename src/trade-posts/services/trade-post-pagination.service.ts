@@ -13,6 +13,7 @@ export class TradePostPaginationService {
   async paginate(query: PaginateTradePostQuery = {}, options: PaginateOption, bookmarkedTradePostIds: string[]) {
     const filter = this.getFilter(query);
     const tradePostList = await this.tradePostModel.paginate(filter, { ...options });
+    console.log(tradePostList);
     return new TradePostList({
       ...tradePostList,
       docs: this.mapDocsToResponse(tradePostList.docs, bookmarkedTradePostIds),
@@ -49,7 +50,7 @@ export class TradePostPaginationService {
     return docs
       .map((doc: TradePost) => new TradePostResponse(doc))
       .map((tradePost) => {
-        tradePost.isBookmarked = bookmarkedTradePostIds.some((bookmarkedId) => bookmarkedId === String(tradePost._id));
+        tradePost.isBookmarked = bookmarkedTradePostIds.some((bookmarkedId) => bookmarkedId === String(tradePost.id));
         return tradePost;
       });
   }

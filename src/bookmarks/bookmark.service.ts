@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { BookmarkLimitExceeded } from './exceptions/bookmark.exception';
 import { IBookmarkService } from './interfaces/bookmark.interface';
 import { BookmarkResponse } from './responses/bookmark.response';
@@ -20,7 +20,7 @@ export class BookmarkService implements IBookmarkService {
       throw new BookmarkLimitExceeded();
     }
 
-    const bookmark = await this.bookmarkModel.findOneAndUpdate(
+    const bookmark = await this.bookmarkModel.findOneAndUpdate<Bookmark>(
       { userId },
       { $addToSet: { tradePosts: tradePostId } },
       { upsert: true, new: true },
@@ -34,7 +34,7 @@ export class BookmarkService implements IBookmarkService {
     const bookmark = await this.bookmarkModel.findOne({ userId });
 
     if (!bookmark) {
-      return new BookmarkResponse({ userId: new Types.ObjectId(userId), tradePosts: [] });
+      return new BookmarkResponse({ userId, tradePosts: [] });
     }
 
     return new BookmarkResponse(bookmark);

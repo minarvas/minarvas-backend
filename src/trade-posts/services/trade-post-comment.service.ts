@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, PaginateModel, Types } from 'mongoose';
+import { Model, PaginateModel } from 'mongoose';
 import { TradePostNotFound } from '../exceptions/trade-post.exception';
 import {
   CreateTradePostCommentInput,
@@ -20,9 +20,9 @@ export class TradePostCommentService {
     @InjectModel(TradePost.name) private readonly tradePostModel: Model<TradePostDocument>,
   ) {}
 
-  async createTradePostComment(authorId: Types.ObjectId, { tradePostId, ...input }: CreateTradePostCommentInput) {
+  async createTradePostComment(authorId: string, { tradePostId, ...input }: CreateTradePostCommentInput) {
     const comment = await this.tradePostCommentModel.create({ ...input, authorId });
-    await this.tradePostModel.findByIdAndUpdate(tradePostId, { $push: { comments: comment._id } });
+    await this.tradePostModel.findByIdAndUpdate(tradePostId, { $push: { comments: comment.id } });
     return new TradePostCommentResponse(comment);
   }
 
@@ -47,7 +47,7 @@ export class TradePostCommentService {
     return tradePostComment;
   }
 
-  async deleteTradePostComments(tradePostCommentIds: Types.ObjectId[] | TradePostComment[]) {
+  async deleteTradePostComments(tradePostCommentIds: string[] | TradePostComment[]) {
     try {
       await this.tradePostCommentModel.deleteMany({ _id: tradePostCommentIds });
     } catch (err) {

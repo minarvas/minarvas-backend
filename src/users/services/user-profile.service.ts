@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class UserNameGenerator {
+export class UserProfileService {
   generate() {
     return 'John Doe';
   }

@@ -1,6 +1,6 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { IBookmarkService } from '../../bookmarks/interfaces/bookmark.interface';
 import { TradeAction } from '../enums/trade-action.enum';
 import { CreateTradePostInput } from '../inputs/trade-post.input';
@@ -71,13 +71,11 @@ describe('TradePostService', () => {
       };
 
       jest.spyOn(tradePostModel, 'countDocuments').mockResolvedValueOnce(0);
-      jest
-        .spyOn(tradePostModel, 'create')
-        .mockResolvedValueOnce({ _id: new Types.ObjectId('65a178d35a5f64cf91e950d8') } as any);
+      jest.spyOn(tradePostModel, 'create').mockResolvedValueOnce({ id: '65a178d35a5f64cf91e950d8' } as any);
       jest.spyOn(TradePostStorageService.prototype, 'uploadImage').mockResolvedValueOnce('image-url');
       jest.spyOn(tradePostModel, 'findByIdAndUpdate').mockResolvedValueOnce({
-        _id: new Types.ObjectId('65a178d35a5f64cf91e950d8'),
-        authorId: new Types.ObjectId('65a24bff8cfbf7b75ff72717'),
+        id: '65a178d35a5f64cf91e950d8',
+        authorId: '65a24bff8cfbf7b75ff72717',
         comments: [],
       } as any);
       const result = await tradePostService.createTradePost(userId, input);

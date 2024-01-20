@@ -4,7 +4,6 @@ import { UserService } from 'src/users/user.service';
 import { CreateUserDTO } from '../users/dto/user.dto';
 import { UserProvider } from '../users/enums/user-provider.enum';
 import { UserResponse } from '../users/responses/user.response';
-import { UserDocument } from '../users/schemas/user.schema';
 import { AuthenticatedUser } from './dto/auth.dto';
 import { JwtToken } from './dto/jwt.dto';
 import { KakaoRedirectInput } from './inputs/auth-kakao.input';
@@ -43,13 +42,13 @@ export class AuthService {
   }
 
   async registerSocialUser(payload: CreateUserDTO) {
-    const user: UserDocument = await this.userService.createUser(payload);
+    const user: UserResponse = await this.userService.createUser(payload);
     const jwtToken: JwtToken = this.jwtTokenGenerator.sign(user.id);
     return new AuthenticatedUser({ ...user, ...jwtToken });
   }
 
   async loginSocialUser(payload: CreateUserDTO) {
-    const user: UserDocument = await this.userService.getUserByEmail(payload.email);
+    const user: UserResponse = await this.userService.getUserByEmail(payload.email);
     const jwtToken: JwtToken = this.jwtTokenGenerator.sign(user.id);
     return new AuthenticatedUser({ ...user, ...jwtToken });
   }
@@ -72,7 +71,7 @@ export class AuthService {
     });
 
     const {
-      _id: userId,
+      id: userId,
       accessToken,
       refreshToken,
     } = await this.socialSignup({

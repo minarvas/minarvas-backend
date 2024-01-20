@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import * as paginate from 'mongoose-paginate-v2';
 import { User } from '../../users/schemas/user.schema';
 import { TradeAction } from '../enums/trade-action.enum';
@@ -8,9 +8,12 @@ import { TradePostComment } from './trade-post-comment.schema';
 
 export type TradePostDocument = HydratedDocument<TradePost>;
 
-@Schema({ collection: 'trade_posts', timestamps: true })
+@Schema({
+  collection: 'trade_posts',
+  timestamps: true,
+})
 export class TradePost {
-  _id: Types.ObjectId;
+  id: string;
 
   @Prop({ required: true, enum: TradeAction, index: true })
   action: TradeAction;
@@ -27,14 +30,14 @@ export class TradePost {
   @Prop({ required: true, index: true, enum: TradeStatus, default: TradeStatus.OPEN })
   status: TradeStatus;
 
-  @Prop({ required: true, type: Types.ObjectId, index: true, ref: User.name })
-  authorId: Types.ObjectId;
+  @Prop({ required: true, type: String, index: true, ref: User.name })
+  authorId: string;
 
-  @Prop({ required: false, type: [{ type: Types.ObjectId, ref: TradePostComment.name }] })
+  @Prop({ required: false, type: [{ type: String, ref: TradePostComment.name }] })
   comments?: TradePostComment[];
 
-  @Prop({ default: [], required: true, type: [{ type: Types.ObjectId, ref: User.name }], index: true })
-  bookmarkedBy?: Types.ObjectId[];
+  @Prop({ default: [], required: true, type: [{ type: String, ref: User.name }], index: true })
+  bookmarkedBy?: string[];
 
   @Prop({ required: false })
   image?: string;
@@ -49,5 +52,25 @@ export class TradePost {
 const TradePostSchema = SchemaFactory.createForClass(TradePost);
 
 TradePostSchema.plugin(paginate);
+
+TradePostSchema.set('toJSON', {
+  getters: true,
+  virtuals: true,
+  transform: function (_, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+  },
+});
+
+TradePostSchema.set('toObject', {
+  getters: true,
+  virtuals: true,
+  transform: function (_, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+  },
+});
 
 export { TradePostSchema };

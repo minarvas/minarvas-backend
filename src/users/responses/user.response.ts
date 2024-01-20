@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Exclude, Transform } from 'class-transformer';
 import { BaseResponse } from '../../common/responses/base.response';
+import { IAccount } from '../interfaces/account.interface';
 import { IUser } from '../interfaces/user.interface';
 import { AccountResponse } from './account.response';
 
@@ -17,7 +18,7 @@ export class UserResponse extends BaseResponse implements IUser {
 
   @Field((_type) => [AccountResponse])
   @Transform(({ value }) => value.map((account) => new AccountResponse(account)))
-  accounts: AccountResponse[];
+  accounts: IAccount[];
 
   @Exclude()
   refreshToken?: string;

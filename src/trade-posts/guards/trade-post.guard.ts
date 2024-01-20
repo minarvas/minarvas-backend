@@ -31,7 +31,7 @@ export class TradePostGuard implements CanActivate {
       throw new UnauthenticatedException();
     }
 
-    if (tradePost.authorId.toString() !== user._id.toString()) {
+    if (tradePost.authorId.toString() !== user.id.toString()) {
       this.logger.error('User is not the author of the trade post');
       throw new UnauthenticatedException();
     }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { CreateUserDTO, UpdateUserDTO } from './dto/user.dto';
 import { UserResponse } from './responses/user.response';
 import { User, UserDocument } from './schemas/user.schema';
@@ -9,9 +9,10 @@ import { User, UserDocument } from './schemas/user.schema';
 export class UserService {
   constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
 
-  async createUser(args: CreateUserDTO): Promise<UserDocument> {
+  async createUser(args: CreateUserDTO): Promise<UserResponse> {
     const { provider, ...basicInfo } = args;
-    return await this.userModel.create({ ...basicInfo, accounts: [{ provider }] });
+    const user = await this.userModel.create({ ...basicInfo, accounts: [{ provider }] });
+    return new UserResponse(user);
   }
 
   async isExistUser(email: string): Promise<boolean> {
@@ -20,15 +21,16 @@ export class UserService {
   }
 
   async getUser(userId: string): Promise<UserResponse> {
-    const user: UserDocument = await this.userModel.findById(userId);
+    const user: User = await this.userModel.findById<User>(userId);
     return new UserResponse(user);
   }
 
-  async getUserByEmail(email: string): Promise<UserDocument> {
-    return this.userModel.findOne({ email });
+  async getUserByEmail(email: string): Promise<UserResponse> {
+    const user = await this.userModel.findOne({ email });
+    return new UserResponse(user);
   }
 
-  async updateUser(userId: Types.ObjectId, dto: UpdateUserDTO): Promise<UserResponse> {
+  async updateUser(userId: string, dto: UpdateUserDTO): Promise<UserResponse> {
     const user: UserDocument = await this.userModel.findOneAndUpdate<UserDocument>({ _id: userId }, dto, { new: true });
     return new UserResponse(user);
   }

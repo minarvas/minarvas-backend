@@ -4,7 +4,7 @@ import { endOfHour, startOfHour } from 'date-fns';
 import { isEmpty } from 'lodash';
 import { Model } from 'mongoose';
 import { IBookmarkService } from '../bookmarks/interfaces/bookmark.interface';
-import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
+import { TradePostNotFound } from './exceptions/trade-post.exception';
 import {
   BookmarkTradePostInput,
   CreateTradePostInput,
@@ -36,14 +36,13 @@ export class TradePostService implements ITradePostService {
     const end = endOfHour(new Date());
     const count = await this.tradePostModel.countDocuments({ authorId: userId, createdAt: { $gte: start, $lte: end } });
 
-    if (count >= this.CREATION_MAX_IN_HOUR) {
-      throw new TradePostCreationMaxExceeded();
-    }
+    // if (count >= this.CREATION_MAX_IN_HOUR) {
+    //   throw new TradePostCreationMaxExceeded();
+    // }
 
-    const { _id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
-    const imageUrl = await this.tradePostStorageService.uploadImage(tradePostId.toHexString(), image);
+    const { id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
+    const imageUrl = await this.tradePostStorageService.uploadImage(tradePostId, image);
     const tradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, { image: imageUrl }, { new: true });
-    console.log(tradePost);
     return new TradePostResponse(tradePost);
   }
 
@@ -62,8 +61,6 @@ export class TradePostService implements ITradePostService {
 
     if (userId) {
       const bookmark = await this.bookmarkService.getBookmark(userId);
-      console.log(bookmark);
-      console.log(tradePostId);
       result.isBookmarked = bookmark?.tradePostIds?.some((id) => id === tradePostId) || false;
     }
 
@@ -72,7 +69,8 @@ export class TradePostService implements ITradePostService {
 
   async getTradePostList(userId: string, input: PaginateTradePostInput) {
     const { tradePostIds } = await this.bookmarkService.getBookmark(userId);
-    return this.tradePostPaginationService.paginate(input.query, input.options, tradePostIds);
+    const paginatedResult = await this.tradePostPaginationService.paginate(input.query, input.options, tradePostIds);
+    return paginatedResult;
   }
 
   async getTradePostsByIds(tradePostIds: string[]) {

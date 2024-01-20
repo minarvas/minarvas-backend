@@ -28,7 +28,7 @@ export class TradePostResolver {
   @Mutation(() => TradePostResponse)
   @UserAuth()
   async createTradePost(
-    @AuthorizedUser('_id') authorId: string,
+    @AuthorizedUser('id') authorId: string,
     @Input() input: CreateTradePostInput,
     @Args({ name: 'image', type: () => GraphQLUpload, nullable: true })
     image?: FileUpload,
@@ -38,13 +38,13 @@ export class TradePostResolver {
 
   @Query(() => TradePostResponse)
   @UserAuth()
-  async getTradePost(@AuthorizedUser('_id') userId: string, @Input() input: GetTradePostInput) {
+  async getTradePost(@AuthorizedUser('id') userId: string, @Input() input: GetTradePostInput) {
     return this.tradePostService.getTradePost(userId, input.tradePostId);
   }
 
   @Query(() => TradePostList)
   @OptionalUserAuth()
-  async getTradePostList(@AuthorizedUser('_id') userId: string, @Input() input: PaginateTradePostInput) {
+  async getTradePostList(@AuthorizedUser('id') userId: string, @Input() input: PaginateTradePostInput) {
     return this.tradePostService.getTradePostList(userId, input);
   }
 
@@ -55,31 +55,31 @@ export class TradePostResolver {
 
   @Mutation(() => TradePostResponse)
   @TradePostAuth()
-  async updateTradePost(@AuthorizedUser('_id') userId: string, @Input() input: UpdateTradePostInput) {
+  async updateTradePost(@AuthorizedUser('id') userId: string, @Input() input: UpdateTradePostInput) {
     return this.tradePostService.updateTradePost(userId, input);
   }
 
   @Mutation(() => TradePostResponse, { nullable: true })
   @TradePostAuth()
-  async deleteTradePost(@AuthorizedUser('_id') userId: string, @Input() input: GetTradePostInput) {
+  async deleteTradePost(@AuthorizedUser('id') userId: string, @Input() input: GetTradePostInput) {
     return this.tradePostService.deleteTradePost(userId, input.tradePostId);
   }
 
   @Query(() => [TradePostResponse], { nullable: true })
   @UserAuth()
-  async getBookmarkedTradePosts(@AuthorizedUser('_id') userId: string) {
+  async getBookmarkedTradePosts(@AuthorizedUser('id') userId: string) {
     return this.tradePostService.getBookmarkedTradePosts(userId);
   }
 
   @Mutation(() => TradePostResponse)
   @UserAuth()
-  async bookmarkTradePost(@AuthorizedUser('_id') userId: string, @Input() input: BookmarkTradePostInput) {
+  async bookmarkTradePost(@AuthorizedUser('id') userId: string, @Input() input: BookmarkTradePostInput) {
     return this.tradePostService.bookmarkTradePost(userId, input);
   }
 
   @Mutation(() => TradePostResponse)
   @UserAuth()
-  async unbookmarkTradePost(@AuthorizedUser('_id') userId: string, @Input() input: BookmarkTradePostInput) {
+  async unbookmarkTradePost(@AuthorizedUser('id') userId: string, @Input() input: BookmarkTradePostInput) {
     return this.tradePostService.unbookmarkTradePost(userId, input);
   }
 }

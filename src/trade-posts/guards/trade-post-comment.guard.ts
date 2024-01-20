@@ -30,7 +30,7 @@ export class TradePostCommentGuard implements CanActivate {
       throw new UnauthenticatedException();
     }
 
-    if (comment.authorId.toString() !== user._id.toString()) {
+    if (comment.authorId.toString() !== user.id.toString()) {
       this.logger.error('User is not the author of the comment');
       throw new UnauthenticatedException();
     }
