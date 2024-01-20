@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { endOfHour, startOfHour } from 'date-fns';
 import { isEmpty } from 'lodash';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { IBookmarkService } from '../bookmarks/interfaces/bookmark.interface';
 import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
 import {
@@ -20,6 +20,7 @@ import { TradePostStorageService } from './services/trade-post-storage.service';
 
 @Injectable()
 export class TradePostService implements ITradePostService {
+  private readonly logger = new Logger(TradePostService.name);
   private readonly CREATION_MAX_IN_HOUR = 5;
 
   constructor(
@@ -30,7 +31,7 @@ export class TradePostService implements ITradePostService {
     private readonly tradePostCommentService: TradePostCommentService,
   ) {}
 
-  async createTradePost(userId: Types.ObjectId, input: CreateTradePostInput, image?: any) {
+  async createTradePost(userId: string, input: CreateTradePostInput, image?: any) {
     const start = startOfHour(new Date());
     const end = endOfHour(new Date());
     const count = await this.tradePostModel.countDocuments({ authorId: userId, createdAt: { $gte: start, $lte: end } });
@@ -42,6 +43,7 @@ export class TradePostService implements ITradePostService {
     const { _id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
     const imageUrl = await this.tradePostStorageService.uploadImage(tradePostId.toHexString(), image);
     const tradePost = await this.tradePostModel.findByIdAndUpdate(tradePostId, { image: imageUrl }, { new: true });
+    console.log(tradePost);
     return new TradePostResponse(tradePost);
   }
 

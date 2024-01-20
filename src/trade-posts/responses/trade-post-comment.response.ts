@@ -1,13 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseResponse } from '../../common/responses/base.response';
-import { ITradePostComment } from '../interfaces/trade-post-comment.interface';
-import { Types } from 'mongoose';
-import { UserResponse } from '../../users/responses/user.response';
 import { PaginationResponse } from '../../common/responses/pagination.response';
+import { UserResponse } from '../../users/responses/user.response';
+import { ITradePostComment } from '../interfaces/trade-post-comment.interface';
+import { TradePostCommentDocument } from '../schemas/trade-post-comment.schema';
 
 @ObjectType()
 export class TradePostCommentResponse extends BaseResponse implements ITradePostComment {
-  authorId: Types.ObjectId;
+  authorId: string;
 
   @Field()
   content: string;
@@ -15,7 +15,7 @@ export class TradePostCommentResponse extends BaseResponse implements ITradePost
   @Field((_) => UserResponse, { description: 'The author of the trade post comment' })
   author: UserResponse;
 
-  constructor(partial: Partial<TradePostCommentResponse>) {
+  constructor(partial: Partial<TradePostCommentDocument>) {
     super(partial);
     Object.assign(this, {
       authorId: partial?.authorId,

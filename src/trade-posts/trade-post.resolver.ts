@@ -1,7 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
-import { Types } from 'mongoose';
 import { OptionalUserAuth, UserAuth } from '../auth/decorators/auth.decorator';
 import { Input } from '../graphql/args/input.args';
 import { AuthorizedUser } from '../users/decorators/user.decorator';
@@ -29,7 +28,7 @@ export class TradePostResolver {
   @Mutation(() => TradePostResponse)
   @UserAuth()
   async createTradePost(
-    @AuthorizedUser('_id') authorId: Types.ObjectId,
+    @AuthorizedUser('_id') authorId: string,
     @Input() input: CreateTradePostInput,
     @Args({ name: 'image', type: () => GraphQLUpload, nullable: true })
     image?: FileUpload,

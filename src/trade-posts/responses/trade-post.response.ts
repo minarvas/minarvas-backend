@@ -1,5 +1,4 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Types } from 'mongoose';
 import { BaseResponse } from '../../common/responses/base.response';
 import { PaginationResponse } from '../../common/responses/pagination.response';
 import { UserResponse } from '../../users/responses/user.response';
@@ -16,7 +15,7 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
   @Field()
   price: number;
 
-  authorId: Types.ObjectId;
+  authorId: string;
 
   @Field((_) => UserResponse, { description: 'The author of the trade post' })
   author: UserResponse;
@@ -41,12 +40,12 @@ export class TradePostResponse extends BaseResponse implements ITradePost {
 
   comments: TradePostComment[];
 
-  constructor(partial: Partial<TradePostResponse>) {
+  constructor(partial: Partial<ITradePost>) {
     super(partial);
     Object.assign(this, {
       action: partial?.action,
       price: partial?.price,
-      authorId: partial?.authorId.toHexString(),
+      authorId: partial?.authorId,
       title: partial?.title,
       description: partial?.description,
       status: partial?.status,

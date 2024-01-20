@@ -10,7 +10,7 @@
     "build": "nest build",
     "build:docker": "SERVICE_ENV=development && ./scripts/docker-build.sh",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "SERVICE_ENV=local && nest start --watch",
+    "start": "SERVICE_ENV=local && rm -rf ./dist && nest start --watch",
     "start:docker": "yarn build:docker && docker run -d -p 8080:8080 --name minarvas-owl minarvas",
     "start:dev": "SERVICE_ENV=development && nest start --watch",
     "start:prod": "node dist/src/main",

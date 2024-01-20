@@ -46,7 +46,7 @@ export class AuthResolver {
     return user;
   }
 
-  @Mutation()
+  @Mutation(() => Boolean, { description: `Logout user with refresh-token in request authorization header` })
   async logout(@Context() context: GraphqlContext) {
     context.res
       .clearCookie('Refresh-Token')
