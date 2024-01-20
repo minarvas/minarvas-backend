@@ -37,3 +37,9 @@ jobs:
       HOST: ${{ secrets.HOST }}
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  notify:
+    needs: deploy
+    uses: ./.github/workflows/notify.yml
+    secrets:
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

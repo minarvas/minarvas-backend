@@ -1,0 +1,21 @@
+run-name: Notify
+on:
+  workflow_call:
+    secrets:
+      SLACK_WEBHOOK:
+        required: true
+
+jobs:
+  Run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: proj-release
+          SLACK_ICON: https://github.com/minarvas/demo-repository/assets/79891873/081ee8be-8966-4f08-b34d-7bf049ef754a
+          SLACK_USERNAME: Minarvas Backend Bot
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
