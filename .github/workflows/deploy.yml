@@ -33,11 +33,9 @@ jobs:
 
       - name: Deploy
         run: |
-          VERSION=$(grep -o '"version": "[^"]*' package.json | cut -d '"' -f 4)
-          echo "VERSION: $VERSION"
           echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem "${{ secrets.HOST }}" << EOF
           docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
-          minarvas run "$VERSION"
+          minarvas run latest
           EOF
