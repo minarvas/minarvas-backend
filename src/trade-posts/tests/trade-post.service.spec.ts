@@ -62,7 +62,7 @@ describe('TradePostService', () => {
   describe('createTradePost', () => {
     it('should create a trade post', async () => {
       // Mock the necessary dependencies and input data
-      const userId = new Types.ObjectId();
+      const userId = '65a178d35a5f64cf91e95123';
       const input: CreateTradePostInput = {
         action: TradeAction.BUY,
         price: 1000,
