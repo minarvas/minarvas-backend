@@ -1,17 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { UserService } from 'src/users/user.service';
-import { UserProvider } from '../users/enums/user-provider.enum';
 import { ConfigService } from '@nestjs/config';
-import { AuthUrlResponse } from './responses/auth-url.response';
-import { KakaoRedirectInput } from './inputs/auth-kakao.input';
-import { KakaoService } from './services/kakao.service';
-import { JwtTokenGenerator } from './services/jwt-token.service';
-import { JwtToken } from './dto/jwt.dto';
-import { AuthenticatedUser } from './dto/auth.dto';
-import { JwtAuth } from './interfaces/auth.interface';
-import { UserDocument } from '../users/schemas/user.schema';
+import { UserService } from 'src/users/user.service';
 import { CreateUserDTO } from '../users/dto/user.dto';
+import { UserProvider } from '../users/enums/user-provider.enum';
 import { UserResponse } from '../users/responses/user.response';
+import { UserDocument } from '../users/schemas/user.schema';
+import { AuthenticatedUser } from './dto/auth.dto';
+import { JwtToken } from './dto/jwt.dto';
+import { KakaoRedirectInput } from './inputs/auth-kakao.input';
+import { JwtAuth } from './interfaces/auth.interface';
+import { AuthUrlResponse } from './responses/auth-url.response';
+import { JwtTokenGenerator } from './services/jwt-token.service';
+import { KakaoService } from './services/kakao.service';
 
 @Injectable()
 export class AuthService {

@@ -45,4 +45,14 @@ export class AuthResolver {
 
     return user;
   }
+
+  @Mutation()
+  async logout(@Context() context: GraphqlContext) {
+    context.res
+      .clearCookie('Refresh-Token')
+      .header('Access-Control-Expose-Headers', 'Access-Token')
+      .header('Access-Control-Allow-Credentials', 'true')
+      .header('Access-Control-Allow-Origin', this.client);
+    return true;
+  }
 }
