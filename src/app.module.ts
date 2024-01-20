@@ -4,7 +4,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
-import { S3, SharedIniFileCredentials } from 'aws-sdk';
+import { S3 } from 'aws-sdk';
 import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
 import { omit } from 'lodash';
 import { AwsSdkModule } from 'nest-aws-sdk';
@@ -49,7 +49,8 @@ import { TradePostModule } from './trade-posts/trade-post.module';
       defaultServiceOptions: {
         useFactory: (configService: ConfigService) => ({
           region: configService.get<string>('AWS_REGION'),
-          credentials: new SharedIniFileCredentials({ profile: configService.get<string>('AWS_PROFILE') }),
+          accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
+          secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY'),
         }),
         imports: [ConfigModule],
         inject: [ConfigService],

@@ -4,7 +4,7 @@ import { endOfHour, startOfHour } from 'date-fns';
 import { isEmpty } from 'lodash';
 import { Model } from 'mongoose';
 import { IBookmarkService } from '../bookmarks/interfaces/bookmark.interface';
-import { TradePostNotFound } from './exceptions/trade-post.exception';
+import { TradePostCreationMaxExceeded, TradePostNotFound } from './exceptions/trade-post.exception';
 import {
   BookmarkTradePostInput,
   CreateTradePostInput,
@@ -36,9 +36,9 @@ export class TradePostService implements ITradePostService {
     const end = endOfHour(new Date());
     const count = await this.tradePostModel.countDocuments({ authorId: userId, createdAt: { $gte: start, $lte: end } });
 
-    // if (count >= this.CREATION_MAX_IN_HOUR) {
-    //   throw new TradePostCreationMaxExceeded();
-    // }
+    if (count >= this.CREATION_MAX_IN_HOUR) {
+      throw new TradePostCreationMaxExceeded();
+    }
 
     const { id: tradePostId } = await this.tradePostModel.create({ ...input, authorId: userId });
     const imageUrl = await this.tradePostStorageService.uploadImage(tradePostId, image);
