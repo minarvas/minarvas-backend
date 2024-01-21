@@ -2,8 +2,6 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { IBookmarkService } from '../../bookmarks/interfaces/bookmark.interface';
-import { TradeAction } from '../enums/trade-action.enum';
-import { CreateTradePostInput } from '../inputs/trade-post.input';
 import { TradePostComment } from '../schemas/trade-post-comment.schema';
 import { TradePost, TradePostDocument } from '../schemas/trade-post.schema';
 import { TradePostCommentService } from '../services/trade-post-comment.service';
@@ -25,10 +23,7 @@ describe('TradePostService', () => {
         {
           provide: IBookmarkService,
           useValue: {
-            bookmarkTradePost: jest.fn(),
-            unbookmarkTradePost: jest.fn(),
-            getBookmarkedTradePosts: jest.fn(),
-            isTradePostBookmarked: jest.fn(),
+            getBookmark: jest.fn(),
           },
         },
         {
@@ -40,9 +35,7 @@ describe('TradePostService', () => {
         {
           provide: getModelToken(TradePost.name),
           useValue: {
-            countDocuments: jest.fn(),
-            create: jest.fn(),
-            findByIdAndUpdate: jest.fn(),
+            findById: jest.fn(),
           },
         },
         {
@@ -59,29 +52,26 @@ describe('TradePostService', () => {
     tradePostModel = module.get<Model<TradePostDocument>>(getModelToken(TradePost.name));
   });
 
-  describe('createTradePost', () => {
-    it('should create a trade post', async () => {
-      // Mock the necessary dependencies and input data
-      const userId = '65a178d35a5f64cf91e95123';
-      const input: CreateTradePostInput = {
-        action: TradeAction.BUY,
-        price: 1000,
+  describe('getTradePost', () => {
+    it('should return trade post', async () => {
+      const userId = 'userId';
+      const tradePostId = 'tradePostId';
+      const tradePost = {
+        id: tradePostId,
+        authorId: 'authorId',
         title: 'title',
         description: 'description',
+        image: 'image',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      jest.spyOn(tradePostModel, 'countDocuments').mockResolvedValueOnce(0);
-      jest.spyOn(tradePostModel, 'create').mockResolvedValueOnce({ id: '65a178d35a5f64cf91e950d8' } as any);
-      jest.spyOn(TradePostStorageService.prototype, 'uploadImage').mockResolvedValueOnce('image-url');
-      jest.spyOn(tradePostModel, 'findByIdAndUpdate').mockResolvedValueOnce({
-        id: '65a178d35a5f64cf91e950d8',
-        authorId: '65a24bff8cfbf7b75ff72717',
-        comments: [],
-      } as any);
-      const result = await tradePostService.createTradePost(userId, input);
+      jest.spyOn(tradePostModel, 'findById').mockResolvedValueOnce(tradePost as any);
+      jest.spyOn(bookmarkService, 'getBookmark').mockResolvedValueOnce({ tradePostIds: ['tradePostId'] } as any);
 
-      // Assert the result
-      expect(result).toBeDefined();
+      const result = await tradePostService.getTradePost(userId, tradePostId);
+
+      expect(result.isBookmarked).toBe(true);
     });
   });
 });
