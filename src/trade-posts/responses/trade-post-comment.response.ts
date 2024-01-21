@@ -15,11 +15,14 @@ export class TradePostCommentResponse extends BaseResponse implements ITradePost
   @Field((_) => UserResponse, { description: 'The author of the trade post comment' })
   author: UserResponse;
 
+  postId: string;
+
   constructor(partial: Partial<TradePostCommentDocument>) {
     super(partial);
     Object.assign(this, {
       authorId: partial?.authorId,
       content: partial?.content,
+      postId: partial?.postId,
     });
   }
 }

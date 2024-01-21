@@ -112,7 +112,7 @@ export class TradePostService implements ITradePostService {
     const session = await this.tradePostModel.startSession();
     await session.withTransaction(async () => {
       await this.bookmarkService.deleteBookmarks(tradePostId);
-      this.tradePostCommentService.deleteTradePostComments(tradePost.comments);
+      this.tradePostCommentService.deleteTradePostComments(tradePost.id);
       this.tradePostStorageService.deleteImage(tradePostId);
       await this.tradePostModel.findByIdAndDelete(tradePostId);
     });

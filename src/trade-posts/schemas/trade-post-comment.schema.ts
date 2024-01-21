@@ -20,6 +20,9 @@ export class TradePostComment {
   id: string;
 
   @Prop({ required: true, index: true })
+  postId: string;
+
+  @Prop({ required: true, index: true })
   content: string;
 
   @Prop({ required: true, type: String, index: true, ref: User.name })

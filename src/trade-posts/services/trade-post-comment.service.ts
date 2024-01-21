@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, PaginateModel } from 'mongoose';
-import { TradePostNotFound } from '../exceptions/trade-post.exception';
 import {
   CreateTradePostCommentInput,
   GetTradePostCommentListInput,
@@ -24,7 +23,7 @@ export class TradePostCommentService {
     const session = await this.tradePostCommentModel.startSession();
 
     const result = await session.withTransaction(async () => {
-      const comment = await this.tradePostCommentModel.create({ ...input, authorId });
+      const comment = await this.tradePostCommentModel.create({ ...input, authorId, postId: tradePostId });
       await this.tradePostModel.findByIdAndUpdate(tradePostId, { $push: { comments: comment.id } });
       return new TradePostCommentResponse(comment);
     });
@@ -34,29 +33,34 @@ export class TradePostCommentService {
   }
 
   async getTradePostCommentList({ tradePostId, pagination }: GetTradePostCommentListInput) {
-    const tradePost = await this.tradePostModel.findById(tradePostId);
-
-    if (!tradePost) {
-      throw new TradePostNotFound(tradePostId);
-    }
-
-    const comments = await this.tradePostCommentModel.paginate({ _id: tradePost.comments }, pagination.options);
+    const paginatedResult = await this.tradePostCommentModel.paginate({ postId: tradePostId }, pagination.options);
 
     return new TradePostCommentList({
-      ...comments,
-      docs: comments.docs.map((doc) => new TradePostCommentResponse(doc)),
+      ...paginatedResult,
+      docs: paginatedResult.docs.map((doc) => new TradePostCommentResponse(doc)),
     });
   }
 
   async deleteTradePostComment(tradePostCommentId: string) {
     const tradePostComment = await this.getTradePostComment(tradePostCommentId);
-    await this.tradePostCommentModel.findByIdAndDelete(tradePostCommentId);
-    return tradePostComment;
+    if (!tradePostComment) return null;
+
+    const session = await this.tradePostCommentModel.startSession();
+    const result = await session.withTransaction(async () => {
+      await this.tradePostCommentModel.findByIdAndDelete(tradePostCommentId);
+      await this.tradePostModel.findOneAndUpdate(
+        { _id: tradePostComment.postId },
+        { $pull: { comments: tradePostCommentId } },
+      );
+      return tradePostComment;
+    });
+
+    return result;
   }
 
-  async deleteTradePostComments(tradePostCommentIds: string[] | TradePostComment[]) {
+  async deleteTradePostComments(tradePostId: string) {
     try {
-      await this.tradePostCommentModel.deleteMany({ _id: tradePostCommentIds });
+      await this.tradePostCommentModel.deleteMany({ postId: tradePostId });
     } catch (err) {
       this.logger.error('Fail to delete trade post comments', err);
     }
