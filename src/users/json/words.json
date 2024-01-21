@@ -112,12 +112,9 @@
     { "name": "로랑", "imageUrl": "" },
     { "name": "월묘", "imageUrl": "" },
     { "name": "엄티", "imageUrl": "" },
-    { "name": "헥터", "imageUrl": "" },
-    { "name": "화이트팽", "imageUrl": "" },
     { "name": "페페", "imageUrl": "" },
     { "name": "예티", "imageUrl": "" },
     { "name": "레쉬", "imageUrl": "" },
-    { "name": "하프", "imageUrl": "" },
-    { "name": "샤크", "imageUrl": "" }
+    { "name": "하프", "imageUrl": "" }
   ]
 }

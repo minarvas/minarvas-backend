@@ -21,9 +21,16 @@ export class TradePostCommentService {
   ) {}
 
   async createTradePostComment(authorId: string, { tradePostId, ...input }: CreateTradePostCommentInput) {
-    const comment = await this.tradePostCommentModel.create({ ...input, authorId });
-    await this.tradePostModel.findByIdAndUpdate(tradePostId, { $push: { comments: comment.id } });
-    return new TradePostCommentResponse(comment);
+    const session = await this.tradePostCommentModel.startSession();
+
+    const result = await session.withTransaction(async () => {
+      const comment = await this.tradePostCommentModel.create({ ...input, authorId });
+      await this.tradePostModel.findByIdAndUpdate(tradePostId, { $push: { comments: comment.id } });
+      return new TradePostCommentResponse(comment);
+    });
+
+    session.endSession();
+    return result;
   }
 
   async getTradePostCommentList({ tradePostId, pagination }: GetTradePostCommentListInput) {
