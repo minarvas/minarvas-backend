@@ -4,14 +4,19 @@ import { Model } from 'mongoose';
 import { CreateUserDTO, UpdateUserDTO } from './dto/user.dto';
 import { UserResponse } from './responses/user.response';
 import { User, UserDocument } from './schemas/user.schema';
+import { UserProfileService } from './services/user-profile.service';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly userProfileService: UserProfileService,
+  ) {}
 
   async createUser(args: CreateUserDTO): Promise<UserResponse> {
-    const { provider, ...basicInfo } = args;
-    const user = await this.userModel.create({ ...basicInfo, accounts: [{ provider }] });
+    const { provider, email } = args;
+    const profile = await this.userProfileService.generateName();
+    const user = await this.userModel.create({ email, accounts: [{ provider }], ...profile });
     return new UserResponse(user);
   }
 

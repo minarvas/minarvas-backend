@@ -70,17 +70,10 @@ export class AuthService {
       clientSecret: this.kakaoSecret,
     });
 
-    const {
-      id: userId,
-      accessToken,
-      refreshToken,
-    } = await this.socialSignup({
+    const { accessToken, refreshToken } = await this.socialSignup({
       email: profile.kakao_account.email,
-      name: profile.kakao_account.profile.nickname,
       provider: UserProvider.KAKAO,
     });
-
-    await this.userService.updateUser(userId, { refreshToken });
 
     return { accessToken, refreshToken };
   }

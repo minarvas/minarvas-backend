@@ -15,11 +15,14 @@ export class User {
   @Prop({ required: true })
   name: string;
 
+  @Prop({ required: true, default: 1 })
+  tag: number;
+
+  @Prop({ required: false, nullable: true, default: null })
+  image: string;
+
   @Prop({ required: true, default: new Date(), type: mongoose.Schema.Types.Date })
   lastLoginTime: Date;
-
-  @Prop()
-  refreshToken?: string | null;
 
   @Prop([
     {

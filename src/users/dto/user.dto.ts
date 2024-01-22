@@ -1,7 +1,7 @@
-import { IUser } from '../interfaces/user.interface';
 import { Field } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import { UserProvider } from '../enums/user-provider.enum';
+import { IUser } from '../interfaces/user.interface';
 
 export class UpdateUserDTO implements Partial<IUser> {
   name?: string;
@@ -14,11 +14,6 @@ export class CreateUserDTO implements Partial<IUser> {
   @IsNotEmpty()
   @IsEmail()
   email: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsString()
-  name: string;
 
   @Field(() => UserProvider)
   @IsNotEmpty()
