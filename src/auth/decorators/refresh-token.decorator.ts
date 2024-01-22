@@ -7,16 +7,17 @@ export const RefreshToken = createParamDecorator((_: string, context: GraphqlCon
   const logger = new Logger('RefreshTokenDecorator');
   const ctx = GqlExecutionContext.create(context);
   const request = ctx.getContext().req;
-  const token = extractTokenFromCookie(request);
+  const token = extractTokenFromHeader(request);
 
   if (!token) {
-    logger.error('No refresh token in request cookie');
+    logger.error('No refresh token in request header');
     throw new UnauthorizedException();
   }
 
   return token;
 });
 
-const extractTokenFromCookie = (request: Request): string | null => {
-  return request.cookies['Refresh-Token'] || null;
+const extractTokenFromHeader = (request: Request): string | undefined => {
+  const [type, token] = request.headers.authorization?.split(' ') ?? [];
+  return type === 'Bearer' ? token : undefined;
 };

@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
+import { Controller, Get, Query, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -17,16 +17,6 @@ export class AuthController {
   @Get('kakao/callback')
   async authKakao(@Query() query: KakaoRedirectInput, @Res() res: Response) {
     const { accessToken, refreshToken } = await this.authService.signupByKakao(query);
-
-    res
-      .cookie('Refresh-Token', refreshToken, {
-        sameSite: 'none',
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 30,
-        secure: true,
-      })
-      .header('Access-Control-Allow-Credentials', 'true')
-      .header('Access-Control-Allow-Origin', this.host)
-      .redirect(HttpStatus.MOVED_PERMANENTLY, `${this.clientRedirectionUrl}?accessToken=${accessToken}`);
+    res.redirect(`${this.clientRedirectionUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}`);
   }
 }

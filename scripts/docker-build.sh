@@ -17,6 +17,3 @@ echo "Building image with Docker Buildx"
 docker buildx create --use
 docker buildx build --platform linux/amd64,linux/arm64/v8 -t ilkhso/minarvas-owl:$version -q --push .
 
-# 4. Docker Hub 에 이미지 푸시
-# echo "Pushing image to Docker Hub"
-# docker push ilkhso/minarvas-owl:$version

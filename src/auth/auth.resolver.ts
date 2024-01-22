@@ -31,28 +31,13 @@ export class AuthResolver {
   }
 
   @Mutation(() => UserResponse, {
-    description: `Refresh access-token and refresh-token with refresh-tzoken in request authorization header.\n 
-    You can get new access-token and refresh-token ( Access-Token in header, Refresh-Token in cookie ).`,
+    description: `Refresh access-token and refresh-token with refresh-token in request authorization header.\n 
+    You can get new access-token and refresh-token ( Access-Token, Refresh-Token in header ).`,
   })
   async refreshToken(@RefreshToken() refreshToken: string, @Context() context: GraphqlContext) {
     const { jwtToken, user } = await this.authService.refreshToken(refreshToken);
-    context.res
-      .cookie('Refresh-Token', jwtToken.refreshToken)
-      .header('Access-Token', jwtToken.accessToken)
-      .header('Access-Control-Expose-Headers', 'Access-Token')
-      .header('Access-Control-Allow-Credentials', 'true')
-      .header('Access-Control-Allow-Origin', this.client);
-
+    context.res.header('Access-Token', jwtToken.accessToken);
+    context.res.header('Refresh-Token', jwtToken.refreshToken);
     return user;
-  }
-
-  @Mutation(() => Boolean, { description: `Logout user with refresh-token in request authorization header` })
-  async logout(@Context() context: GraphqlContext) {
-    context.res
-      .clearCookie('Refresh-Token')
-      .header('Access-Control-Expose-Headers', 'Access-Token')
-      .header('Access-Control-Allow-Credentials', 'true')
-      .header('Access-Control-Allow-Origin', this.client);
-    return true;
   }
 }
