@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as fs from 'fs';
 import { Model } from 'mongoose';
-import * as path from 'path';
+import { adjectives, nouns } from '../constants';
 import { User, UserDocument } from '../schemas/user.schema';
 
 type Noun = {
@@ -12,20 +11,18 @@ type Noun = {
 
 @Injectable()
 export class UserProfileService {
-  private words: {
-    adjectives: string[];
-    nouns: Noun[];
-  };
+  private readonly adjectives: string[];
+  private readonly nouns: Noun[];
 
   constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {
-    const jsonFilePath = path.resolve(__dirname, '../json/words.json');
-    const jsonData = fs.readFileSync(jsonFilePath, 'utf-8');
-    this.words = JSON.parse(jsonData);
+    this.adjectives = adjectives;
+    this.nouns = nouns;
+    console.log(this.adjectives);
   }
 
   async generateName() {
-    const randomAdjective: string = this.getRandomElement<string>(this.words.adjectives);
-    const randomNoun: Noun = this.getRandomElement<Noun>(this.words.nouns);
+    const randomAdjective: string = this.getRandomElement<string>(this.adjectives);
+    const randomNoun: Noun = this.getRandomElement<Noun>(this.nouns);
     const name = `${randomAdjective} ${randomNoun.name}`;
     const tag = await this.getTag(name);
     return {
