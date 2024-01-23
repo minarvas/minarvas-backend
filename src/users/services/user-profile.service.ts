@@ -17,7 +17,6 @@ export class UserProfileService {
   constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {
     this.adjectives = adjectives;
     this.nouns = nouns;
-    console.log(this.adjectives);
   }
 
   async generateName() {
