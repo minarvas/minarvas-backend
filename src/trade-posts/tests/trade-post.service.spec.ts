@@ -2,6 +2,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { IBookmarkService } from '../../bookmarks/interfaces/bookmark.interface';
+import { NotificationService } from '../../notifications/notification.service';
 import { TradePostComment } from '../schemas/trade-post-comment.schema';
 import { TradePost, TradePostDocument } from '../schemas/trade-post.schema';
 import { TradePostCommentService } from '../services/trade-post-comment.service';
@@ -12,6 +13,7 @@ import { TradePostService } from '../trade-post.service';
 describe('TradePostService', () => {
   let tradePostService: TradePostService;
   let bookmarkService: IBookmarkService;
+  let notificationService: NotificationService;
   let tradePostModel: Model<TradePostDocument>;
 
   beforeEach(async () => {
@@ -20,6 +22,12 @@ describe('TradePostService', () => {
         TradePostService,
         TradePostPaginationService,
         TradePostCommentService,
+        {
+          provide: NotificationService,
+          useValue: {
+            createNotification: jest.fn(),
+          },
+        },
         {
           provide: IBookmarkService,
           useValue: {

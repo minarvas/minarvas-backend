@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UserService } from 'src/users/user.service';
 import { CreateUserDTO } from '../users/dto/user.dto';
 import { UserProvider } from '../users/enums/user-provider.enum';
 import { UserResponse } from '../users/responses/user.response';
+import { UserService } from '../users/user.service';
 import { AuthenticatedUser } from './dto/auth.dto';
 import { JwtToken } from './dto/jwt.dto';
 import { KakaoRedirectInput } from './inputs/auth-kakao.input';

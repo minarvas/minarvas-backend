@@ -1,4 +1,4 @@
-import { BaseException } from 'src/common/exceptions/base.exception';
+import { BaseException } from '../../common/exceptions/base.exception';
 import { NotificationErrorCode } from '../enums/notification-error-code.enum';
 
 export class CannotBuildMessage extends BaseException {
