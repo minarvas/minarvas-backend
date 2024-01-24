@@ -25,8 +25,13 @@ export class TradePostCommentService {
     const session = await this.tradePostCommentModel.startSession();
 
     const result = await session.withTransaction(async () => {
+      const tradePost = await this.tradePostModel.findById(tradePostId);
       const comment = await this.tradePostCommentModel.create({ ...input, authorId, postId: tradePostId });
       await this.tradePostModel.findByIdAndUpdate(tradePostId, { $push: { comments: comment.id } });
+      this.notificationService.notifyTradePostComment({
+        userId: tradePost.authorId,
+        data: { tradePostId, tradePostTitle: tradePost.title },
+      });
       return new TradePostCommentResponse(comment);
     });
 
