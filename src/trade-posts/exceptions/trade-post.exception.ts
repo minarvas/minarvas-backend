@@ -1,8 +1,8 @@
-import { TradePostErrorCode } from '../enums/trade-post-error-code.enum';
 import { BaseException } from '../../common/exceptions/base.exception';
+import { TradePostErrorCode } from '../enums/trade-post-error-code.enum';
 
 export class TradePostNotFound extends BaseException {
-  constructor(id) {
+  constructor(id: string) {
     super(`TradePost with id ${id} not found`, TradePostErrorCode.TRADE_POST_NOT_FOUND);
   }
 }

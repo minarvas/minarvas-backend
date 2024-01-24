@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BookmarkModule } from 'src/bookmarks/bookmark.module';
+import { BookmarkModule } from '../bookmarks/bookmark.module';
+import { NotificationModule } from '../notifications/notification.module';
 import { UserModule } from '../users/user.module';
 import { ITradePostService } from './interfaces/trade-post.interface';
 import { TradePostCommentResolver } from './resolvers/trade-post-comment.resolver';
@@ -23,6 +24,7 @@ import { TradePostService } from './trade-post.service';
     ]),
     UserModule,
     BookmarkModule,
+    NotificationModule,
   ],
   providers: [
     TradePostResolver,

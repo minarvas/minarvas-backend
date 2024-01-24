@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, PaginateModel } from 'mongoose';
+import { NotificationService } from '../../notifications/notification.service';
 import {
   CreateTradePostCommentInput,
   GetTradePostCommentListInput,
@@ -17,6 +18,7 @@ export class TradePostCommentService {
   constructor(
     @InjectModel(TradePostComment.name) private readonly tradePostCommentModel: PaginateModel<TradePostComment>,
     @InjectModel(TradePost.name) private readonly tradePostModel: Model<TradePostDocument>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async createTradePostComment(authorId: string, { tradePostId, ...input }: CreateTradePostCommentInput) {

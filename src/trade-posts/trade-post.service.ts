@@ -29,6 +29,7 @@ export class TradePostService implements ITradePostService {
     private readonly tradePostPaginationService: TradePostPaginationService,
     private readonly tradePostStorageService: TradePostStorageService,
     private readonly tradePostCommentService: TradePostCommentService,
+
   ) {}
 
   async createTradePost(userId: string, input: CreateTradePostInput, image?: any) {
