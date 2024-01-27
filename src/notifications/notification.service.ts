@@ -24,7 +24,7 @@ export class NotificationService {
       const notification = await this.notificationModel.create({ title, body, type, userId });
       return new NotificationResponse(notification);
     } catch (err) {
-      this.logger.error(err);
+      this.logger.error('Fail to send notification', err);
     }
   }
 }
